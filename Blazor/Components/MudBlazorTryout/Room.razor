@@ -1,8 +1,11 @@
 ﻿@page "/roomType"
 
+@inject Services.DatabaseServices DatabaseServicesInstance
+
+
 <MudContainer Class="mt-16">
-    <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Rum Typer</MudText>
-    <MudText Align="Align.Center">Vælg den type værelse du kunne tænke dig herunder.</MudText>
+    <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Rooms Types</MudText>
+    <MudText Align="Align.Center"> Welcome to our cozy and well-appointed rooms designed to make your stay comfortable and enjoyable.</MudText>
     <MudGrid Class="mt-8">
         <MudItem xs="12" sm="6" md="4">
             <MudCard Elevation="25" Class="rounded-lg pb-4">
@@ -13,7 +16,8 @@
                 </MudCardHeader>
                 <MudCardContent>
                     <div class="d-flex justify-center">
-                        <MudText Typo="Typo.h3">100 Dkk</MudText>
+                        <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">From </MudText>
+                        <MudText Typo="Typo.h3">@PriseSingleStandart @Curency.ToUpper()</MudText>
                         <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">/Per nat</MudText>
                     </div>
                     <MudList T="string" Class="mx-auto mt-4" Style="width:300px;">
@@ -29,7 +33,7 @@
                     </MudList>
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-center">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">Se værelser</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">See rooms</MudButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
@@ -42,7 +46,8 @@
                 </MudCardHeader>
                 <MudCardContent>
                     <div class="d-flex justify-center">
-                        <MudText Typo="Typo.h3">300 Dkk</MudText>
+                        <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">From</MudText>
+                        <MudText Typo="Typo.h3">@PriseSinglePremium @Curency.ToUpper()</MudText>
                         <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">/Per nat</MudText>
                     </div>
                     <MudList T="string" Class="mx-auto mt-4" Style="width:300px;">
@@ -58,7 +63,7 @@
                     </MudList>
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-center">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">Se værelser</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">See rooms</MudButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
@@ -71,7 +76,7 @@
                 </MudCardHeader>
                 <MudCardContent>
                     <div class="d-flex justify-center">
-                        <MudText Typo="Typo.h3">500 Dkk</MudText>
+                        <MudText Typo="Typo.h3">@PrisePenthouse @Curency.ToUpper()</MudText>
                         <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">/Per nat</MudText>
                     </div>
                     <MudList T="string" Class="mx-auto mt-4" Style="width:300px;">
@@ -87,9 +92,51 @@
                     </MudList>
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-center">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">Se værelser</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;" Href="/roomtest">See rooms</MudButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
     </MudGrid>
 </MudContainer>
+
+
+@code {
+    private int PriseSingleStandart = 0;
+    private int PriseDoubleStandart = 0;
+    private int PriseSinglePremium = 0;
+    private int PriseDoublePremium = 0;
+    private int PrisePenthouse = 0;
+    private string Curency = "DKK";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAllRoomsTypes();
+    }
+
+    async Task GetAllRoomsTypes()
+    {
+        var rooms = await DatabaseServicesInstance.GetAllRoomsTypes();
+
+        foreach (var room in rooms)
+        {
+            switch (room.Type)
+            {
+                case "standart single":
+                    PriseSingleStandart = room.Price;
+                    break;
+                case "standart double":
+                    PriseDoubleStandart = room.Price;
+                    break;
+                case "premium single":
+                    PriseSinglePremium = room.Price;
+                    break;
+                case "premium double":
+                    PriseDoublePremium = room.Price;
+                    break;
+                case "penthouse":
+                    PrisePenthouse = room.Price;
+                    break;
+            }
+        }
+    }
+}

@@ -9,11 +9,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    /// <summary>
+    
     /// Controller for reservation endpoints
-    /// 
     /// Most likely wanna later add some more complex logic here to handle creation of reservations based off of user and room availability and such.
-    /// </summary>
+    
     [ApiController]
     [Route("[controller]")]
     public class ReservationsController : Controller
@@ -29,10 +28,10 @@ namespace API.Controllers
             _userManager = userManager;
         }
 
-        /// <summary>
+        
         /// Get all reservations
-        /// </summary>
-        /// <returns>Status OK with the list of reservations</returns>
+       
+        
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -41,7 +40,7 @@ namespace API.Controllers
             return Ok(reservations);
         }
 
-        /// <summary>
+        
         /// Get specific reservation by ID
         /// </summary>
         /// <param name="id">Reservation ID</param>
@@ -60,8 +59,8 @@ namespace API.Controllers
         /// <param name="reservation">Reservation object</param>
         /// <returns>Status CREATED</returns>
         [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> Post([FromBody] CreateReservationDTO reservation)
+        //[Authorize]
+        public async Task<IActionResult> Post(CreateReservationDTO reservation)
         {
             // Check if the data fulfills the requirements of the DTO
             if (!ModelState.IsValid)
@@ -70,13 +69,13 @@ namespace API.Controllers
             }
 
             // Find user by username
-            var username = User.GetUsername();
-            var appuser = await _userManager.FindByNameAsync(username);
+            //var username = User.GetUsername();
+            //var appuser = await _userManager.FindByNameAsync(username);
 
             Room? room = await _context.Rooms.Include(r => r.Reservations).FirstAsync(r => r.Id == reservation.RoomId);
-            User? customer = _context.Users.FirstOrDefault(u => u.UserName == username);
+            //User? customer = _context.Users.FirstOrDefault(u => u.UserName == username);
 
-            if (room == null || customer == null)
+            if (room == null)
             {
                 return BadRequest("Room ID could not be found.");
             }
@@ -93,7 +92,10 @@ namespace API.Controllers
             Reservation res = new Reservation
             {
                 Rooms = new List<Room> { room },
-                Customer = customer,
+                //Customer = customer,
+                GuestName = reservation.GuestName,
+                GuestPhoneNr = reservation.GuestPhoneNr,
+                GuestEmail = reservation.GuestEmail,
                 Price = room.Price,
                 CheckIn = reservation.CheckIn,
                 CheckOut = reservation.CheckOut

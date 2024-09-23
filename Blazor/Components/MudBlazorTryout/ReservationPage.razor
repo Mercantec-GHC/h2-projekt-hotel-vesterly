@@ -1,6 +1,9 @@
 ﻿@page "/reservations"
 @inject AuthService Http
 @inject NavigationManager Navigation
+@inject HttpClient Http
+@inject Services.DatabaseServices DatabaseServicesInstance
+
 @using Blazor.Auth
 @using MudBlazor
 
@@ -23,22 +26,24 @@
         {
             <MudTable Items="reservations" Hover="true" Bordered="true">
                 <HeaderContent>
-                    <MudTh>ID</MudTh>
-                    <MudTh>Customer Name</MudTh>
+                    <MudTh>Room</MudTh>
+                    <MudTh>Room Number</MudTh>
                     <MudTh>Check-In</MudTh>
                     <MudTh>Check-Out</MudTh>
                     <MudTh>Price</MudTh>
+                    <MudTh>Guest Name</MudTh>
                     <MudTh>Actions</MudTh>
                 </HeaderContent>
                 <RowTemplate>
-                    <MudTd>@context.Id</MudTd>
-                    <MudTd>@context.CustomerName</MudTd>
+                    <MudTd>@context.RoomType</MudTd>
+                    <MudTd>@context.RoomNumber</MudTd>
                     <MudTd>@context.CheckIn.ToShortDateString()</MudTd>
                     <MudTd>@context.CheckOut.ToShortDateString()</MudTd>
                     <MudTd>@context.Price</MudTd>
+                    <MudTd>@context.GuestName</MudTd>
                     <MudTd>
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => EditReservation(context.Id))">Edit</MudButton>
-                        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(async () => await DeleteReservation(context.Id))">Delete</MudButton>
+                       @*  <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => EditReservation(reservations))">Edit</MudButton> *@
+                       @*  <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(async () => await DeleteReservation(context.Id))">Delete</MudButton> *@
                     </MudTd>
                 </RowTemplate>
             </MudTable>
@@ -51,7 +56,7 @@
 </MudCard>
 
 @code {
-    private List<Reservations>? reservations;
+   List<DomainModels.DTO.Reservation.GetReservationsDTO>? reservations = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -59,16 +64,11 @@
     }
 
     //simple api call to get a list over all current reservations.
-    private async Task LoadReservations()
+     async Task LoadReservations()
     {
-        try
-        {
-            reservations = await Http.GetFrom<List<Reservations>>("https://localhost:7207/Reservations");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
+        reservations.Clear();
+        reservations.AddRange(await DatabaseServicesInstance.GetAllReservations());
+        StateHasChanged();
     }
     
     //got issues with making something similar to the delete function, placeholder class for now.
@@ -84,34 +84,34 @@
     }
 
     //class that implements delete function on the razor page which deletes the entry, requires admin login.
-    private async Task DeleteReservation(int id)
-    {
-        try
-        {
-            //call the api with a Delete call for the specific id, if successful call, reload reservations to show updated list.
-            //GetHttpClient() is a function within the AuthService.cs which then includes the login information in the header, since only admin has delete permission.
-            var response = await Http.GetHttpClient().DeleteAsync($"https://localhost:7207/Reservations/{id}");
-            if (response.IsSuccessStatusCode)
-            {
-                await LoadReservations();
-            }
-            else
-            {
-                Console.WriteLine("Failed to delete the reservation.");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-    }
+    // private async Task DeleteReservation(int id)
+    // {
+    //     try
+    //     {
+    //         //call the api with a Delete call for the specific id, if successful call, reload reservations to show updated list.
+    //         //GetHttpClient() is a function within the AuthService.cs which then includes the login information in the header, since only admin has delete permission.
+    //         var response = await Http.GetHttpClient().DeleteAsync($"https://localhost:7207/Reservations/{id}");
+    //         if (response.IsSuccessStatusCode)
+    //         {
+    //             await LoadReservations();
+    //         }
+    //         else
+    //         {
+    //             Console.WriteLine("Failed to delete the reservation.");
+    //         }
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Console.WriteLine(ex.Message);
+    //     }
+    // }
 
-    public class Reservations
-    {
-        public int Id { get; set; }
-        public string CustomerName { get; set; } = default!;
-        public DateTime CheckIn { get; set; }
-        public DateTime CheckOut { get; set; }
-        public decimal Price { get; set; }
-    }
+    // public class Reservations
+    // {
+    //     public int Id { get; set; }
+    //     public string CustomerName { get; set; } = default!;
+    //     public DateTime CheckIn { get; set; }
+    //     public DateTime CheckOut { get; set; }
+    //     public decimal Price { get; set; }
+    // }
 }

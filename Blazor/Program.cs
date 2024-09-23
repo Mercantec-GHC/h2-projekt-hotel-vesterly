@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor.Services;
 using System.Net.Http;
 using Blazored.LocalStorage;
+using Blazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,8 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddAuthenticationCore();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddScoped<DatabaseServices>();
+builder.Services.AddScoped<HttpClient>();
 
 
 // Register HttpClient for server-side Blazor

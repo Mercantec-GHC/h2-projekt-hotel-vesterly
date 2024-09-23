@@ -9,9 +9,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
-
-// Controller for room endpoints
-
 [ApiController]
 [Route("[controller]")]
 public class RoomController : ControllerBase
@@ -106,9 +103,8 @@ public class RoomController : ControllerBase
         return Ok(room);
     }
 
-    /// <summary>
     /// Update Room
-    /// </summary>
+    
     /// <param name="room">Room object</param>
     /// <returns>Status OK with modified Room</returns>
     [HttpPut]
@@ -121,9 +117,9 @@ public class RoomController : ControllerBase
         return Ok(room);
     }
 
-    /// <summary>
+    
     /// Delete Room by ID
-    /// </summary>
+    
     /// <param name="id">Integer ID of Room</param>
     /// <returns>Status OK</returns>
     [HttpDelete("{id}")]
@@ -138,9 +134,9 @@ public class RoomController : ControllerBase
     }
 
 
-    /// <summary>
+    
     /// Search for rooms. 
-    /// </summary>
+    
     /// <param name="query"></param>
     /// <returns>A paginated list of rooms fitting the filters</returns>
     /// <remarks>
@@ -190,9 +186,9 @@ public class RoomController : ControllerBase
         
     }
 
-    /// <summary>
+   
     /// Get the details of a room as a nice to digest DTO
-    /// </summary>
+    
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("RoomDetails/{id}")]
