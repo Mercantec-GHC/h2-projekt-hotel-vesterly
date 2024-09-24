@@ -14,6 +14,8 @@ namespace API.Controllers
     /// 
     /// Most likely wanna later add some more complex logic here to handle creation of reservations based off of user and room availability and such.
     /// </summary>
+    /// 
+    
     [ApiController]
     [Route("[controller]")]
     public class ReservationsController : Controller
@@ -61,6 +63,7 @@ namespace API.Controllers
         /// <returns>Status CREATED</returns>
         [HttpPost]
         [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Post([FromBody] CreateReservationDTO reservation)
         {
             // Check if the data fulfills the requirements of the DTO

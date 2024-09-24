@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+
+
+@page "/Reservations/Post"
+<h3>MakeReservation</h3>
+<h1>Helllllloooooo</h1>
+@code {
+
+}
+<!DOCTYPE html>
+<html>
+
+<body>
+
+<form method="post" >
+        @Html.AntiForgeryToken()
+    <div class="form-group">
+        <label asp-for="Reservation.RoomId" class="control-label"></label>
+        <select asp-for="Reservation.RoomId" class="form-control" asp-items="Model.Rooms">
+            <option value="">Select a Room</option>
+        </select>
+        <span asp-validation-for="Reservation.RoomId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Reservation.CheckIn" class="control-label"></label>
+        <input asp-for="Reservation.CheckIn" class="form-control" type="date" />
+        <span asp-validation-for="Reservation.CheckIn" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Reservation.CheckOut" class="control-label"></label>
+        <input asp-for="Reservation.CheckOut" class="form-control" type="date" />
+        <span asp-validation-for="Reservation.CheckOut" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Reservation</button>
+</form>
+</body>
+</html>
