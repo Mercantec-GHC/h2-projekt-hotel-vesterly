@@ -13,8 +13,8 @@
 
 <body>
 
-<form method="post" >
-        @Html.AntiForgeryToken()
+<form method="post"  >
+        
     <div class="form-group">
         <label asp-for="Reservation.RoomId" class="control-label"></label>
         <select asp-for="Reservation.RoomId" class="form-control" asp-items="Model.Rooms">
@@ -25,7 +25,7 @@
 
     <div class="form-group">
         <label asp-for="Reservation.CheckIn" class="control-label"></label>
-        <input asp-for="Reservation.CheckIn" class="form-control" type="date" />
+        <input asp-for="Reservation.CheckIn" class="form-control" type="date"  />
         <span asp-validation-for="Reservation.CheckIn" class="text-danger"></span>
     </div>
 

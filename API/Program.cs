@@ -16,10 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddRazorPages(options =>
-{
-    options.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
-});
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(); // If you have authentication in place
 builder.Services.AddAuthorization();
@@ -107,7 +104,7 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.MapRazorPages();
+
 
 app.MapControllers();
 
