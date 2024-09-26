@@ -1,14 +1,20 @@
 ﻿@page "/"
 @using Blazor.Auth
 @using DomainModels.DB
-@inject AuthService AuthService
+@inject Blazor.Services.DatabaseServices DatabaseServices
+
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hotel Vesterly</h1>
 
-Velkommen til Hotel Vesterly, her kan du booke nogle af de bedste rum.
-
+Welcome to our cozy and well-appointed rooms designed to make your stay comfortable and enjoyable.
+    Whether you choose a single or double room, each space is equipped with modern amenities to suit your needs.
+    Each room features either a single or double bed, ensuring a restful night's sleep.
+    The ensuite bathroom includes a refreshing shower, providing convenience and privacy.
+    For entertainment and relaxation, you'll find a TV where you can unwind after a day of exploring.
+    A functional workspace with a desk is also available for those who need to catch up on work or correspondence.
+    Stay connected with complimentary Wi-Fi throughout the premises, allowing you to keep in touch or plan your next adventure
 
 @if (rooms != null)
 {
@@ -28,13 +34,16 @@ Velkommen til Hotel Vesterly, her kan du booke nogle af de bedste rum.
 </AuthorizeView>
 
     @code{
-        private List<Room> rooms;
+        private List<Room> rooms = new();
 
         protected override async Task OnInitializedAsync()
         {
+            await GetRooms();
+        }
 
-            rooms = await AuthService.GetFrom<List<Room>>("https://localhost:7207/Room/GetAll");
-
-
+        async Task GetRooms()
+        {
+            rooms.AddRange(await DatabaseServices.GetRooms());
+            StateHasChanged();
         }
 }

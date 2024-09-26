@@ -16,6 +16,6 @@ public class GetReservationsDTO
     public DateTime CheckOut { get; set; }
     public int Price{ get; set;}
     public string RoomType { get; set; } = null!;
-    public string RoomNumber { get; set; } = null!;
-    public List<DateTime> BookedDays { get; set; } = new List<DateTime>();
+    public int RoomNumber { get; set; }
+    
 }

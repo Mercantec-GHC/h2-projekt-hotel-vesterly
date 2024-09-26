@@ -6,6 +6,7 @@
 
 @using Blazor.Auth
 @using MudBlazor
+@using System.Diagnostics;
 
 <MudCard>
     <MudCardHeader>
@@ -42,7 +43,7 @@
                     <MudTd>@context.Price</MudTd>
                     <MudTd>@context.GuestName</MudTd>
                     <MudTd>
-                       @*  <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => EditReservation(reservations))">Edit</MudButton> *@
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/editreservation">Edit</MudButton>
                        @*  <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(async () => await DeleteReservation(context.Id))">Delete</MudButton> *@
                     </MudTd>
                 </RowTemplate>
@@ -56,32 +57,31 @@
 </MudCard>
 
 @code {
-   List<DomainModels.DTO.Reservation.GetReservationsDTO>? reservations = new();
+   List<DomainModels.DTO.Reservation.GetReservationsDTO> reservations = new();
 
     protected override async Task OnInitializedAsync()
     {
         await LoadReservations();
     }
 
-    //simple api call to get a list over all current reservations.
-     async Task LoadReservations()
+
+    async Task LoadReservations()
     {
         reservations.Clear();
         reservations.AddRange(await DatabaseServicesInstance.GetAllReservations());
+
+
         StateHasChanged();
     }
     
-    //got issues with making something similar to the delete function, placeholder class for now.
+    
     private void CreateReservation()
     {
-        Navigation.NavigateTo("/Reservations/Post");
+        Navigation.NavigateTo("/createreservation");
     }
 
-    //placeholder class at the current moment.
-    private void EditReservation(int id)
-    {
-        Navigation.NavigateTo($"/Reservations/Update/{id}");
-    }
+    
+    
 
     //class that implements delete function on the razor page which deletes the entry, requires admin login.
     // private async Task DeleteReservation(int id)
@@ -106,12 +106,6 @@
     //     }
     // }
 
-    // public class Reservations
-    // {
-    //     public int Id { get; set; }
-    //     public string CustomerName { get; set; } = default!;
-    //     public DateTime CheckIn { get; set; }
-    //     public DateTime CheckOut { get; set; }
-    //     public decimal Price { get; set; }
-    // }
+    
+    
 }

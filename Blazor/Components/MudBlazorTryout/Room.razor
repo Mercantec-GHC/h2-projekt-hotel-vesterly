@@ -7,6 +7,9 @@
     <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Rooms Types</MudText>
     <MudText Align="Align.Center"> Welcome to our cozy and well-appointed rooms designed to make your stay comfortable and enjoyable.</MudText>
     <MudGrid Class="mt-8">
+
+        @* Standart room *@
+
         <MudItem xs="12" sm="6" md="4">
             <MudCard Elevation="25" Class="rounded-lg pb-4">
                 <MudCardHeader>
@@ -15,7 +18,7 @@
                     </CardHeaderContent>
                 </MudCardHeader>
                 <MudCardContent>
-                    <div class="d-flex justify-center">
+                    <div class="d-flex align-center flex-column">
                         <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">From </MudText>
                         <MudText Typo="Typo.h3">@PriseSingleStandart @Curency.ToUpper()</MudText>
                         <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">/Per nat</MudText>
@@ -37,6 +40,9 @@
                 </MudCardActions>
             </MudCard>
         </MudItem>
+
+        @* Premium room *@
+
         <MudItem xs="12" sm="6" md="4">
             <MudCard Elevation="25" Class="rounded-lg pb-4">
                 <MudCardHeader>
@@ -45,7 +51,7 @@
                     </CardHeaderContent>
                 </MudCardHeader>
                 <MudCardContent>
-                    <div class="d-flex justify-center">
+                    <div class="d-flex align-center flex-column">
                         <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">From</MudText>
                         <MudText Typo="Typo.h3">@PriseSinglePremium @Curency.ToUpper()</MudText>
                         <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">/Per nat</MudText>
@@ -67,6 +73,9 @@
                 </MudCardActions>
             </MudCard>
         </MudItem>
+
+        @* Penthouse *@
+
         <MudItem xs="12" sm="12" md="4">
             <MudCard Elevation="25" Class="rounded-lg pb-4">
                 <MudCardHeader>
@@ -75,7 +84,8 @@
                     </CardHeaderContent>
                 </MudCardHeader>
                 <MudCardContent>
-                    <div class="d-flex justify-center">
+                    <div class="d-flex align-center flex-column">
+                        <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary"> <br /> </MudText>
                         <MudText Typo="Typo.h3">@PrisePenthouse @Curency.ToUpper()</MudText>
                         <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">/Per nat</MudText>
                     </div>

@@ -1,7 +1,8 @@
-﻿using DomainModels.DB;
+﻿using Blazor.Auth;
+using DomainModels.DB;
 using DomainModels.DTO;
 using DomainModels.DTO.Reservation;
-using System.Net.Http;
+
 
 namespace Blazor.Services;
 
@@ -9,37 +10,43 @@ public class DatabaseServices
 {
     private readonly HttpClient _http;
     private readonly string _baseURL = "https://localhost:7207/";
+    private readonly AuthService _authService;
 
-    public DatabaseServices(HttpClient http)
+
+    public DatabaseServices(HttpClient http, AuthService authService)
     {
         _http = http;
+        _authService = authService;
     }
 
-    public async Task<List<GetRoomDetailsDTO>> GetRooms()
+
+    //----- Room -------//
+    public async Task<List<Room>> GetRooms()
     {
-        return await _http.GetFromJsonAsync<List<GetRoomDetailsDTO>>(_baseURL + "rooms");
+
+        return await _authService.GetFrom<List<Room>>(_baseURL + "Room/GetAll") ?? new();
     }
 
     public async Task<GetRoomDetailsDTO> GetRoom(int id)
     {
-        return await _http.GetFromJsonAsync<GetRoomDetailsDTO>(_baseURL + "rooms/{id}");
+        return await _http.GetFromJsonAsync<GetRoomDetailsDTO>(_baseURL + "Room/{id}") ?? new();
     }
 
     public async Task<Room> AddRoom(Room room)
     {
-        var response = await _http.PostAsJsonAsync(_baseURL + "rooms", room);
+        var response = await _http.PostAsJsonAsync(_baseURL + "Room", room);
         return await response.Content.ReadFromJsonAsync<Room>();
     }
 
     public async Task<Room> UpdateRoom(Room room)
     {
-        var response = await _http.PutAsJsonAsync(_baseURL + "rooms/{room.Id}", room);
+        var response = await _http.PutAsJsonAsync(_baseURL + "Room/{id}", room);
         return await response.Content.ReadFromJsonAsync<Room>();
     }
 
     public async Task DeleteRoom(int id)
     {
-        await _http.DeleteAsync(_baseURL + "rooms/{id}");
+        await _http.DeleteAsync(_baseURL + "Room/{id}");
     }
 
     public async Task<List<Room>> GetAllRoomsTypes()
@@ -47,8 +54,15 @@ public class DatabaseServices
         return await _http.GetFromJsonAsync<List<Room>>(_baseURL + "Room/types") ?? new();
     }
 
+    //----- Reservation -------//
+
     public async Task <List<GetReservationsDTO>> GetAllReservations()
     {
         return await _http.GetFromJsonAsync<List<GetReservationsDTO>>(_baseURL + "Reservations") ?? new();
+    }
+
+    public Task<Reservation> GetReservationByIdAsync(int id)
+    {
+        return _http.GetFromJsonAsync<Reservation>(_baseURL +"Reservations/{id}");
     }
 }
