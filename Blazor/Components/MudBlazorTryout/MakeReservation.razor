@@ -7,8 +7,10 @@
 <h1>Helllllloooooo</h1>
 @code {
     public Reservation Reservation { get; set; }
-       
+
 }
+<!DOCTYPE html>
+<html>
 
 
 <!DOCTYPE html>
@@ -25,21 +27,25 @@
         <h1>Book Your Stay</h1>
         <form class="booking-form" asp-action="Create" method="post">
             <div class="form-group">
-               
+        
                
             </div>
-            <div class="form-group">
+    <div class="form-group">
                 <label for="checkIn">Check-In</label>
                 <input type="date" id="checkIn" name="CheckIn" required>
-            </div>
-            <div class="form-group">
+    </div>
+
+    <div class="form-group">
                 <label for="checkOut">Check-Out</label>
                 <input type="date" id="checkOut" name="CheckOut" required>
-            </div>
-            <div class="form-group">
+    </div>
+
+    <div class="form-group">
                 <button type="submit" class="btn-submit">Reserve Now</button>
-            </div>
-        </form>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Reservation</button>
+</form>
     </div>
 
 

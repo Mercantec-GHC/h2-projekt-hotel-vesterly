@@ -15,7 +15,7 @@ namespace API.Controllers
     /// Most likely wanna later add some more complex logic here to handle creation of reservations based off of user and room availability and such.
     /// </summary>
     /// 
-    
+    [IgnoreAntiforgeryToken]
     [ApiController]
     [Route("[controller]")]
     public class ReservationsController : Controller
