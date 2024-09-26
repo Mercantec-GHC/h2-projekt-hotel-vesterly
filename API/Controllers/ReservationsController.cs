@@ -62,8 +62,8 @@ namespace API.Controllers
         /// <param name="reservation">Reservation object</param>
         /// <returns>Status CREATED</returns>
         [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
+       [Authorize]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Post([FromBody] CreateReservationDTO reservation)
         {
             // Check if the data fulfills the requirements of the DTO

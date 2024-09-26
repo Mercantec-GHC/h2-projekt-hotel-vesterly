@@ -1,0 +1,132 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+
+
+@page "/Reservations/Post"
+<h3>MakeReservation</h3>
+<h1>Helllllloooooo</h1>
+@code {
+    public Reservation Reservation { get; set; }
+       
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="booking-container">
+        <h1>Book Your Stay</h1>
+        <form class="booking-form" asp-action="Create" method="post">
+            <div class="form-group">
+               
+               
+            </div>
+            <div class="form-group">
+                <label for="checkIn">Check-In</label>
+                <input type="date" id="checkIn" name="CheckIn" required>
+            </div>
+            <div class="form-group">
+                <label for="checkOut">Check-Out</label>
+                <input type="date" id="checkOut" name="CheckOut" required>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn-submit">Reserve Now</button>
+            </div>
+        </form>
+    </div>
+
+
+</body>
+</html>
+<style>
+    /* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Booking Container */
+.booking-container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+}
+
+.booking-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+}
+
+/* Form Styling */
+.booking-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.form-group input, 
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.form-group input:focus, 
+.form-group select:focus {
+    outline: none;
+    border-color: #007BFF;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Button Styling */
+.btn-submit {
+    background-color: #007BFF;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-submit:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive Design */
+
+</style>
