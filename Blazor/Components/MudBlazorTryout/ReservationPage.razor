@@ -1,0 +1,111 @@
+﻿@page "/reservations"
+@inject AuthService Http
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject Services.DatabaseServices DatabaseServicesInstance
+
+@using Blazor.Auth
+@using MudBlazor
+@using System.Diagnostics;
+
+<MudCard>
+    <MudCardHeader>
+        <MudText Typo="Typo.h5">Reservations</MudText>
+    </MudCardHeader>
+
+    <MudCardContent>
+        @*if statement to display a text while loading the page, or if there was an issue.*@
+        @if (reservations == null)
+        {
+            <MudText Typo="Typo.body1">Loading reservations...</MudText>
+        }
+        else if (reservations.Count == 0)
+        {
+            <MudText Typo="Typo.body1">No reservations found.</MudText>
+        }
+        else
+        {
+            <MudTable Items="reservations" Hover="true" Bordered="true">
+                <HeaderContent>
+                    <MudTh>Room</MudTh>
+                    <MudTh>Room Number</MudTh>
+                    <MudTh>Check-In</MudTh>
+                    <MudTh>Check-Out</MudTh>
+                    <MudTh>Price</MudTh>
+                    <MudTh>Guest Name</MudTh>
+                    <MudTh>Actions</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>@context.RoomType</MudTd>
+                    <MudTd>@context.RoomNumber</MudTd>
+                    <MudTd>@context.CheckIn.ToShortDateString()</MudTd>
+                    <MudTd>@context.CheckOut.ToShortDateString()</MudTd>
+                    <MudTd>@context.Price</MudTd>
+                    <MudTd>@context.GuestName</MudTd>
+                    <MudTd>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/editreservation">Edit</MudButton>
+                       @*  <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(async () => await DeleteReservation(context.Id))">Delete</MudButton> *@
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+    </MudCardContent>
+
+    <MudCardActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="CreateReservation">Add Reservation</MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+   List<DomainModels.DTO.Reservation.GetReservationsDTO> reservations = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadReservations();
+    }
+
+
+    async Task LoadReservations()
+    {
+        reservations.Clear();
+        reservations.AddRange(await DatabaseServicesInstance.GetAllReservations());
+
+
+        StateHasChanged();
+    }
+    
+    
+    private void CreateReservation()
+    {
+        Navigation.NavigateTo("/createreservation");
+    }
+
+    
+    
+
+    //class that implements delete function on the razor page which deletes the entry, requires admin login.
+    // private async Task DeleteReservation(int id)
+    // {
+    //     try
+    //     {
+    //         //call the api with a Delete call for the specific id, if successful call, reload reservations to show updated list.
+    //         //GetHttpClient() is a function within the AuthService.cs which then includes the login information in the header, since only admin has delete permission.
+    //         var response = await Http.GetHttpClient().DeleteAsync($"https://localhost:7207/Reservations/{id}");
+    //         if (response.IsSuccessStatusCode)
+    //         {
+    //             await LoadReservations();
+    //         }
+    //         else
+    //         {
+    //             Console.WriteLine("Failed to delete the reservation.");
+    //         }
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Console.WriteLine(ex.Message);
+    //     }
+    // }
+
+    
+    
+}

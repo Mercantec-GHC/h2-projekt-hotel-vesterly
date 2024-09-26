@@ -1,0 +1,54 @@
+﻿@page "/editreservation/{ReservationId:int}"
+
+<h3>Edit Reservation</h3>
+
+@* @if (booking == null)
+{
+    <MudProgressCircular Color="Color.Primary" Size="Size.Large" />
+}
+else
+{
+    <EditForm Model="booking" OnValidSubmit="HandleValidSubmit">
+        <MudCard>
+            <MudCardContent>
+                <MudTextField @bind-Value="booking.FullName" Label="Full Name" Required="true" />
+                <MudTextField @bind-Value="booking.Email" Label="Email" Required="true" />
+                <MudTextField @bind-Value="booking.PhoneNumber" Label="Phone Number" />
+                <MudDatePicker @bind-Value="booking.CheckInDate" Label="Check-In Date" />
+                <MudDatePicker @bind-Value="booking.CheckOutDate" Label="Check-Out Date" />
+                <MudSelect T="RoomType" @bind-Value="booking.RoomType" Label="Room Type">
+                    @foreach (var roomType in Enum.GetValues(typeof(RoomType)))
+                    {
+                        <MudSelectItem Value="@(RoomType)roomType">@roomType</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Type="Submit" Variant="Variant.Filled" Color="Color.Primary">Save</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public int BookingId { get; set; }
+
+    private Booking booking;
+
+    protected override async Task OnInitializedAsync()
+    {
+        booking = await BookingService.GetBookingByIdAsync(BookingId);
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await BookingService.UpdateBookingAsync(booking);
+        Navigation.NavigateTo("/bookings");
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/bookings");
+    }
+} *@

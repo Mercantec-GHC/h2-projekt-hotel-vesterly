@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DomainModels.DB;
+using System.ComponentModel.DataAnnotations;
 
 namespace DomainModels.DTO
 {
@@ -7,7 +8,10 @@ namespace DomainModels.DTO
         [Required]
         public int ReservationId { get; set; }
 
-        public int RoomId { get; set; }
+        public string GuestName { get; set; } = null!;
+        public string GuestEmail { get; set; } = null!;
+        public string? GuestPhoneNr { get; set; }
+        public string RoomType { get; set; } = null!;
         public DateTime CheckIn { get; set; }
         public DateTime CheckOut { get; set; }
     }

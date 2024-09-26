@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(HotelContext))]
-    partial class HotelContextModelSnapshot : ModelSnapshot
+    [Migration("20240923123922_editReservationTable")]
+    partial class editReservationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,14 +138,9 @@ namespace API.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("RoomId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
-
-                    b.HasIndex("RoomId");
 
                     b.ToTable("Reservations");
                 });
@@ -284,18 +282,18 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "9db5fb3a-1c2a-436e-8c6a-81cf21c0dc0c",
+                            Id = "d08a9816-dc54-484e-bc79-229de814ed58",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "393f9c6a-573a-4090-b3f2-8b51fed3bd5e",
+                            ConcurrencyStamp = "fff42f31-c91d-4685-bb8b-e6c86654daa5",
                             Email = "admin@admin.com",
                             EmailConfirmed = false,
                             FirstName = "Admin",
                             LastName = "Admin",
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEFDemzLvE8PNTd4sStZVNu8HMj/L/zy5bedFDwTA1SzCFTwpHX8ofkFZyyNQ9Yd50w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFccl9YQqTVCIBW5gE5GUNomJeFCIPCkKD24D/fMm6+H843Alh2lofZqdC6bwtiLBQ==",
                             PhoneNumber = "123456789",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ab446df1-0e24-4b0c-b811-df3ef8178ef2",
+                            SecurityStamp = "fabd9953-f8b7-4510-aaa3-0a4f6a942e42",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -337,16 +335,31 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c6a2b360-0e94-4294-b0c3-c6127a9b4dec",
+                            Id = "11caf93d-6733-4313-be08-4410f9638a7c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "1aee2e89-d070-4558-a3f6-a59f0ed2ee93",
+                            Id = "b8c62543-e362-4293-9af6-2efe5912a31f",
                             Name = "User",
                             NormalizedName = "USER"
                         });
+                });
+
+            modelBuilder.Entity("ReservationRoom", b =>
+                {
+                    b.Property<int>("ReservationsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RoomsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ReservationsId", "RoomsId");
+
+                    b.HasIndex("RoomsId");
+
+                    b.ToTable("ReservationRoom");
                 });
 
             modelBuilder.Entity("DomainModels.DB.Employee", b =>
@@ -392,15 +405,7 @@ namespace API.Migrations
                         .WithMany()
                         .HasForeignKey("CustomerId");
 
-                    b.HasOne("DomainModels.DB.Room", "Room")
-                        .WithMany("Reservations")
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Customer");
-
-                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("ExtraReservation", b =>
@@ -418,6 +423,21 @@ namespace API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ReservationRoom", b =>
+                {
+                    b.HasOne("DomainModels.DB.Reservation", null)
+                        .WithMany()
+                        .HasForeignKey("ReservationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DomainModels.DB.Room", null)
+                        .WithMany()
+                        .HasForeignKey("RoomsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("DomainModels.DB.Employee", b =>
                 {
                     b.HasOne("DomainModels.DB.Department", "Department")
@@ -427,11 +447,6 @@ namespace API.Migrations
                         .IsRequired();
 
                     b.Navigation("Department");
-                });
-
-            modelBuilder.Entity("DomainModels.DB.Room", b =>
-                {
-                    b.Navigation("Reservations");
                 });
 #pragma warning restore 612, 618
         }
