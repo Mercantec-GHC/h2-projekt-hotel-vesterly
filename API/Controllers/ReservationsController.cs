@@ -63,7 +63,7 @@ namespace API.Controllers
         /// <returns>Status CREATED</returns>
         [HttpPost]
        [Authorize]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Post([FromBody] CreateReservationDTO reservation)
         {
             // Check if the data fulfills the requirements of the DTO
@@ -95,7 +95,7 @@ namespace API.Controllers
 
             Reservation res = new Reservation
             {
-                Rooms = new List<Room> { room },
+                Room = room,
                 Customer = customer,
                 Price = room.Price,
                 CheckIn = reservation.CheckIn,
@@ -183,5 +183,6 @@ namespace API.Controllers
             _context.SaveChanges();
             return Ok();
         }
+
     }
 }

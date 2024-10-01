@@ -10,7 +10,7 @@ namespace DomainModels.DB
         public DateTime CheckIn { get; set; }
         public DateTime CheckOut { get; set; }
         public User Customer { get; set; }
-        public List<Room> Rooms { get; set; }
+        public Room Room { get; set; }
         public List<Extra> Extras { get; set; }
     }
 }

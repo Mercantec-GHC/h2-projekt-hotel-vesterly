@@ -51,7 +51,7 @@ app.UseAuthorization();
 app.UseAntiforgery();
 
 // Ensure it is before UseEndpoints or MapControllers
-app.MapControllers();
+//app.MapControllers();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
