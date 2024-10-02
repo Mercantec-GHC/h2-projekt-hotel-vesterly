@@ -28,11 +28,12 @@ namespace API.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            
+
+            builder.Entity<Message>().Property(m => m.Id).ValueGeneratedOnAdd();
 
             // Seed the roles to the database
             List<IdentityRole> roles = new List<IdentityRole>()
-            {   
+            {
                 new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
                 new IdentityRole { Name = "User", NormalizedName = "USER" }
             };
@@ -51,7 +52,7 @@ namespace API.Data
 
             builder.Entity<User>().HasData(user);
             builder.Entity<IdentityRole>().HasData(roles);
-            
+
         }
     }
 }

@@ -57,6 +57,17 @@ namespace API.Controllers
             return Ok(users);
         }
 
+        [HttpGet("/User/Username/{username}")]
+        public async Task<IActionResult> GetUserByUsername([FromRoute] string username)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+
         /// <summary>
         /// here we have a method that updates a user object by id.
         /// That is to be used by the customers or employee to update that specific customers account

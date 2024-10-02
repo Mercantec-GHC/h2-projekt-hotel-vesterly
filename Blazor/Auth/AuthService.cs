@@ -56,10 +56,10 @@ namespace Blazor.Auth
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<bool> Register(CreateUserDTO request)
+        public async Task<HttpResponseMessage> Register(CreateUserDTO request)
         {
             var response = await _http.PostAsJsonAsync("https://localhost:7207/Authentication/Register", request);
-            return response.IsSuccessStatusCode;
+            return response;
         }
 
         public async Task<T?> GetFrom<T>(string url)

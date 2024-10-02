@@ -2,7 +2,10 @@
 @using DomainModels
 @using DomainModels.DB
 @using System.Net.Http.Json
+@using System.Security.Claims
 @inject HttpClient _httpClient
+@inject AuthenticationStateProvider _authStateProvider
+@inject NavigationManager _navManager
 
 <h3>Ticket</h3>
 
@@ -19,6 +22,32 @@
         </MudCardActions>
     </MudCard>
 </MudContainer>
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudCard Outlined="true">
+        <MudCardContent>
+            <MudText>Comments:</MudText>
+            @foreach (Message message in messages)
+            {
+                <MudCard Outlined="true">
+                    <MudCardContent>
+                        <MudText>From: @message.User.UserName</MudText>
+                        <MudText>Sent at: @message.TimeMessageSent</MudText>
+                        <MudText>@message.MessageText</MudText>
+                    </MudCardContent>
+                </MudCard>
+                <p><br/></p>
+            }
+        </MudCardContent>
+    </MudCard>
+    <MudCard Outlined="true">
+        <MudCardContent>
+            <MudTextField @bind-Value="message.MessageText" Label="Comment" HelperText="Comment" Variant="Variant.Outlined" />
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => AddMessageToDB()">Save comment</MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudContainer>
 
 
 @code {
@@ -27,19 +56,59 @@
 
     Ticket ticket = new();
 
+    List<Message> messages = new();
+
+    Message message = new Message()
+        {
+            User = new()
+        };
+
     protected override async Task OnInitializedAsync()
     {
+        await GetUser();
         await GetTicketFromDB();
     }
 
     public async Task GetTicketFromDB()
     {
         ticket = await _httpClient.GetFromJsonAsync<Ticket>($"https://localhost:7207/Ticket/{ticketId}");
+        messages = await _httpClient.GetFromJsonAsync<List<Message>>($"https://localhost:7207/Ticket/{ticketId}/messages");
+
+        StateHasChanged();
     }
 
     public async Task DeleteTicketInDB()
     {
         await _httpClient.DeleteAsync($"https://localhost:7207/Ticket/{ticketId}");
         Navigation.NavigateTo("/ticket/view/");
+    }
+
+    public async Task AddMessageToDB()
+    {
+        message.Ticket = ticket;
+
+        message.TimeMessageSent = DateTime.UtcNow.AddHours(2);
+
+        await _httpClient.PostAsJsonAsync<Message>($"https://localhost:7207/Ticket/{ticketId}/messages", message);
+
+        GetTicketFromDB();
+
+        message = new Message()
+            {
+                User = new()
+            };
+        GetUser();
+    }
+
+    public async Task GetUser()
+    {
+        var authState = await _authStateProvider.GetAuthenticationStateAsync();
+        var loggedInUser = authState.User;
+
+        if (loggedInUser != null)
+        {
+            var username = loggedInUser.FindFirst("given_name").Value;
+            message.User = await _httpClient.GetFromJsonAsync<User>($"https://localhost:7207/User/Username/{username}");
+        }
     }
 }
