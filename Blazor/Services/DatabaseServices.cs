@@ -64,7 +64,11 @@ public class DatabaseServices
         return await _http.GetFromJsonAsync<List<Room>>(_baseURL + "Room/types") ?? new();
     }
 
-  
+    public async Task<bool> IsRoomAvailable(string roomType, DateTime checkIn, DateTime checkOut)
+    {
+        var url = $"{_baseURL}api/Room/check-availability?roomType={roomType}&checkIn={checkIn:o}&checkOut={checkOut:o}";
+        return await _http.GetFromJsonAsync<bool>(url);
+    }
 
 
 
@@ -87,9 +91,11 @@ public class DatabaseServices
             ReservationId = reservation.Id,
             GuestName = reservation.GuestName,
             GuestEmail = reservation.GuestEmail,
+            GuestPhoneNr = reservation.GuestPhoneNr,
             RoomType = reservation.Room.Type,
             CheckIn = reservation.CheckIn,
             CheckOut = reservation.CheckOut,
+            RoomPrice = reservation.Room.Price,
         };
 
         await _http.PutAsJsonAsync<ModifyReservationDTO>(_baseURL + "Reservations/update", reservationDTO);

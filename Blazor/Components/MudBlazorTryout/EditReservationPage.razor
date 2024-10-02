@@ -38,7 +38,7 @@
                             <MudDatePicker Disabled="@isDisabled" @bind-Value="reservation.CheckIn" Label="Check-In Date" Required="true" />
                             <MudDatePicker Disabled="@isDisabled" @bind-Value="reservation.CheckOut" Label="Check-Out Date" Required="true" />
 
-                            <MudSelect T="string" Disabled="@isDisabled" @bind-Value="reservation.Room.Type" Label="Room Type" Required="true" @onchange="UpdateRoomPrice">
+                            <MudSelect T="string" Disabled="@isDisabled" @bind-Value="reservation.Room.Type" Label="Room Type" Required="true" @onchange="RoomTypeChanged">
                                 @foreach (var roomType in roomTypes)
                                 {
                                     <MudSelectItem Value="roomType">@roomType</MudSelectItem>
@@ -104,7 +104,6 @@
         try
         {
             reservation = await DatabaseServicesInstance.GetReservationById(ReservationId);
-            // Переконаємося, що вибраний тип кімнати існує в roomPrices і оновимо ціну відповідно
             if (roomPrices.ContainsKey(reservation.Room.Type))
             {
                 reservation.Room.Price = roomPrices[reservation.Room.Type];
@@ -117,13 +116,27 @@
         }
     }
 
-    private void UpdateRoomPrice(ChangeEventArgs args)
+    private async Task RoomTypeChanged(ChangeEventArgs args)
     {
         string selectedRoomType = args.Value?.ToString();
-        if (!string.IsNullOrEmpty(selectedRoomType) && roomPrices.ContainsKey(selectedRoomType))
+        if (!string.IsNullOrEmpty(selectedRoomType))
         {
-            reservation.Room.Price = roomPrices[selectedRoomType];
-            StateHasChanged(); // Оновлюємо інтерфейс користувача після зміни ціни
+            
+            bool isRoomAvailable = await DatabaseServicesInstance.IsRoomAvailable(selectedRoomType, reservation.CheckIn, reservation.CheckOut);
+            if (isRoomAvailable)
+            {
+                if (roomPrices.ContainsKey(selectedRoomType))
+                {
+                    reservation.Room.Price = roomPrices[selectedRoomType]; 
+                    reservation.Room.Type = selectedRoomType; 
+                    StateHasChanged();
+                }
+            }
+            else
+            {
+                errorMessage = "No rooms available for the selected type.";
+                reservation.Room.Type = null;
+            }
         }
     }
 

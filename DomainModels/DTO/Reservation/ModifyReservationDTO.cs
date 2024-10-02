@@ -12,6 +12,7 @@ namespace DomainModels.DTO
         public string GuestEmail { get; set; } = null!;
         public string? GuestPhoneNr { get; set; }
         public string RoomType { get; set; } = null!;
+        public int RoomPrice { get; set; }
         public DateTime CheckIn { get; set; }
         public DateTime CheckOut { get; set; }
     }

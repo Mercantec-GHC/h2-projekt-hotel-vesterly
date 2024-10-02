@@ -217,41 +217,42 @@ public class RoomController : ControllerBase
     [HttpGet("check-availability")]
     public async Task<IActionResult> IsRoomAvailable(string roomType, DateTime checkIn, DateTime checkOut)
     {
-        // Отримуємо всі кімнати заданого типу
+        // Retrieve all rooms of the specified type
         var existRooms = await _context.Rooms.Where(x => x.Type == roomType).ToListAsync();
 
-        // Якщо немає кімнат такого типу, повертаємо помилку
+        // If there are no rooms of that type, return an error
         if (existRooms.Count == 0)
         {
             return BadRequest("Room type doesn't exist.");
         }
 
-        // Перевіряємо кожну кімнату на наявність перетинання бронювань
+        // Check each room for overlapping bookings
         foreach (var room in existRooms)
         {
             var isRoomAvailable = true;
 
-            // Проходимо через масив BookedDays для перевірки на перетин
+            // Go through the BookedDates array to check for overlap
             foreach (var bookedDay in room.BookedDates)
             {
-                // Якщо хоча б один день перетинається з діапазоном бронювання, то кімната недоступна
+                // If at least one day overlaps with the booking range, the room is unavailable
                 if (bookedDay >= checkIn && bookedDay < checkOut)
                 {
                     isRoomAvailable = false;
-                    break; // Виходимо з перевірки цієї кімнати
+                    break; // Exit the check for this room
                 }
             }
 
-            // Якщо кімната доступна, повертаємо Ok() з результатом true
+            // If the room is available, return Ok() with the result true
             if (isRoomAvailable)
             {
-                return Ok(true); // Кімната доступна
+                return Ok(true); // The room is available
             }
         }
 
-        // Якщо немає доступних кімнат, повертаємо Ok(false)
-        return Ok(false); // Кімнати недоступні
+        // If no rooms are available, return Ok(false)
+        return Ok(false); // The rooms are unavailable
     }
+
 
 
 
