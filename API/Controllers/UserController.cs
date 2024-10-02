@@ -57,7 +57,7 @@ namespace API.Controllers
             return Ok(users);
         }
 
-        [HttpGet("/User/Username/{username}")]
+        [HttpGet("Username/{username}")]
         public async Task<IActionResult> GetUserByUsername([FromRoute] string username)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);

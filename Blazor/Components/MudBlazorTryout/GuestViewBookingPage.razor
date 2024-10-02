@@ -1,0 +1,86 @@
+﻿@page "/user/bookings/view"
+@using System.ComponentModel.DataAnnotations
+@using DomainModels.DTO
+@using DomainModels.DB
+@inject NavigationManager NavigationManager
+@inject HttpClient _httpClient
+@inject AuthenticationStateProvider _authStateProvider
+
+<h3>Ticket</h3>
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudPaper Class="pa-4">
+        <MudGrid>
+            <MudItem xs="12">
+                <MudGrid>
+                    <MudItem xs="12" sm="1">
+                        id
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        Check-in date
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        Check-out date
+                    </MudItem>
+                    <MudItem xs="12" sm="3">
+                        Price
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+            @foreach (Reservation reservation in reservations)
+            {
+                <MudItem xs="12">
+                    @* <MudLink Href="@($"ticket/view/{ticket.Id}")"> *@
+                    <MudPaper Class="pa-4">
+                        <MudGrid>
+                            <MudItem xs="12" sm="1">
+                                @reservation.Id
+                            </MudItem>
+                            <MudItem xs="12" sm="4">
+                                @reservation.CheckIn.ToShortDateString()
+                            </MudItem>
+                            <MudItem xs="12" sm="4">
+                                @reservation.CheckOut.ToShortDateString()
+                            </MudItem>
+                            <MudItem xs="12" sm="3">
+                                @reservation.Price
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+                    @* </MudLink> *@
+                </MudItem>
+            }
+        </MudGrid>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/Reservations/Post">create reservation</MudButton>
+        </MudCardActions>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    List<Reservation> reservations = new();
+
+    User user = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUser();
+        await GetReservationsFromDB();
+    }
+
+    public async Task GetUser()
+    {
+        var authState = await _authStateProvider.GetAuthenticationStateAsync();
+        var loggedInUser = authState.User;
+
+        if (loggedInUser != null)
+        {
+            var username = loggedInUser.FindFirst("given_name").Value;
+            user = await _httpClient.GetFromJsonAsync<User>($"https://localhost:7207/User/Username/{username}");
+        }
+    }
+
+    public async Task GetReservationsFromDB()
+    {
+        reservations = await _httpClient.GetFromJsonAsync<List<Reservation>>($"https://localhost:7207/Reservations/byUsername/{user.UserName}");
+    }
+}

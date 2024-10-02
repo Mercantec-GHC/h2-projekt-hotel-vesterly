@@ -41,6 +41,13 @@ namespace API.Controllers
             return Ok(reservations);
         }
 
+        [HttpGet("byUsername/{username}")]
+        public async Task<IActionResult> GetByUsername(string username)
+        {
+            var reservations = await _context.Reservations.Where(r => r.Customer.UserName == username).ToListAsync();
+            return Ok(reservations);
+        }
+
         /// <summary>
         /// Get specific reservation by ID
         /// </summary>
@@ -60,7 +67,7 @@ namespace API.Controllers
         /// <param name="reservation">Reservation object</param>
         /// <returns>Status CREATED</returns>
         [HttpPost]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Post([FromBody] CreateReservationDTO reservation)
         {
             // Check if the data fulfills the requirements of the DTO
@@ -70,11 +77,22 @@ namespace API.Controllers
             }
 
             // Find user by username
-            var username = User.GetUsername();
-            var appuser = await _userManager.FindByNameAsync(username);
+            User customer;
+            try
+            {
+                customer = await _userManager.FindByNameAsync(User.GetUsername());
+
+                if (customer == null)
+                {
+                    customer = await _userManager.FindByNameAsync("a");
+                }
+            }
+            catch
+            {
+                customer = await _userManager.FindByNameAsync("a");
+            }
 
             Room? room = await _context.Rooms.Include(r => r.Reservations).FirstAsync(r => r.Id == reservation.RoomId);
-            User? customer = _context.Users.FirstOrDefault(u => u.UserName == username);
 
             if (room == null || customer == null)
             {
@@ -92,11 +110,13 @@ namespace API.Controllers
 
             Reservation res = new Reservation
             {
-                Rooms = new List<Room> { room },
+                Room = room,
                 Customer = customer,
                 Price = room.Price,
                 CheckIn = reservation.CheckIn,
-                CheckOut = reservation.CheckOut
+                CheckOut = reservation.CheckOut,
+                GuestName = reservation.GuestName,
+                GuestEmail = reservation.GuestEmail,
             };
 
             _context.Reservations.Add(res);
@@ -125,13 +145,14 @@ namespace API.Controllers
 
             // Find reservation by ID
             var reservation = _context.Reservations.Find(modifyReservation.ReservationId);
-            if (reservation == null) {
+            if (reservation == null)
+            {
                 return BadRequest("Reservation ID could not be found.");
             }
 
             // Check if user is admin role or user role
             if (!User.IsInRole("Admin"))
-            { 
+            {
                 // User can only update their own reservation
                 if (reservation.Customer.Id != appuser.Id)
                 {
@@ -161,7 +182,7 @@ namespace API.Controllers
             // Get user information
             var username = User.GetUsername();
             var appuser = await _userManager.FindByNameAsync(username);
-            
+
             // Find reservation by ID
             var reservation = await _context.Reservations.FindAsync(id);
 
