@@ -1,8 +1,9 @@
 ﻿@page "/reservations"
-@inject AuthService Http
+@inject HttpClient _httpClient
 @inject NavigationManager Navigation
 @using Blazor.Auth
 @using MudBlazor
+@using DomainModels.DB
 
 <MudCard>
     <MudCardHeader>
@@ -10,18 +11,21 @@
     </MudCardHeader>
 
     <MudCardContent>
+        <MudTextField @bind-Value="nameToSearch" Label="Customer name:" HelperText="Customer name:" Variant="Variant.Outlined" />
+        <MudTextField @bind-Value="mailToSearch" Label="Customer Email:" HelperText="Customer Email:" Variant="Variant.Outlined" />
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => LoadReservations()">Save comment</MudButton>
         @*if statement to display a text while loading the page, or if there was an issue.*@
-        @if (reservations == null)
+        @if (filteredReservations == null)
         {
             <MudText Typo="Typo.body1">Loading reservations...</MudText>
         }
-        else if (reservations.Count == 0)
+        else if (filteredReservations.Count == 0)
         {
             <MudText Typo="Typo.body1">No reservations found.</MudText>
         }
         else
         {
-            <MudTable Items="reservations" Hover="true" Bordered="true">
+            <MudTable Items="filteredReservations" Hover="true" Bordered="true">
                 <HeaderContent>
                     <MudTh>ID</MudTh>
                     <MudTh>Customer Name</MudTh>
@@ -32,12 +36,12 @@
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd>@context.Id</MudTd>
-                    <MudTd>@context.CustomerName</MudTd>
+                    <MudTd>@context.GuestName</MudTd>
                     <MudTd>@context.CheckIn.ToShortDateString()</MudTd>
                     <MudTd>@context.CheckOut.ToShortDateString()</MudTd>
                     <MudTd>@context.Price</MudTd>
                     <MudTd>
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => EditReservation(context.Id))">Edit</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="@($"/Reservations/Update/{context.Id}")">Edit</MudButton>
                         <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(async () => await DeleteReservation(context.Id))">Delete</MudButton>
                     </MudTd>
                 </RowTemplate>
@@ -51,7 +55,12 @@
 </MudCard>
 
 @code {
-    private List<Reservations>? reservations;
+    private List<Reservation>? reservations;
+
+    string nameToSearch = "";
+    string mailToSearch = "";
+
+    List<Reservation>? filteredReservations;
 
     protected override async Task OnInitializedAsync()
     {
@@ -63,7 +72,48 @@
     {
         try
         {
-            reservations = await Http.GetFrom<List<Reservations>>("https://localhost:7207/Reservations");
+            reservations = await _httpClient.GetFromJsonAsync<List<Reservation>>("https://localhost:7207/Reservations");
+
+            filteredReservations = new List<Reservation>();
+
+            if(nameToSearch == "" && mailToSearch == "")
+            {
+                filteredReservations = reservations;
+            }
+            else if(nameToSearch == "" && reservations != null)
+            {
+                foreach(Reservation reservation in reservations)
+                {
+                    if (reservation.GuestEmail.Contains(mailToSearch))
+                    {
+                        filteredReservations.Add(reservation);
+                    }
+                }
+            }
+            else if (mailToSearch == "" && reservations != null)
+            {
+                foreach (Reservation reservation in reservations)
+                {
+                    if (reservation.GuestName.Contains(nameToSearch))
+                    {
+                        filteredReservations.Add(reservation);
+                    }
+                }
+            }
+            else if (reservations != null)
+            {
+                foreach (Reservation reservation in reservations)
+                {
+                    if (reservation.GuestEmail.Contains(mailToSearch))
+                    {
+                        filteredReservations.Add(reservation);
+                    }
+                }
+            }
+            if(filteredReservations.Count == 0)
+            {
+                filteredReservations = null;
+            }
         }
         catch (Exception ex)
         {
@@ -90,7 +140,7 @@
         {
             //call the api with a Delete call for the specific id, if successful call, reload reservations to show updated list.
             //GetHttpClient() is a function within the AuthService.cs which then includes the login information in the header, since only admin has delete permission.
-            var response = await Http.GetHttpClient().DeleteAsync($"https://localhost:7207/Reservations/{id}");
+            var response = await _httpClient.DeleteAsync($"https://localhost:7207/Reservations/{id}");
             if (response.IsSuccessStatusCode)
             {
                 await LoadReservations();
@@ -104,14 +154,5 @@
         {
             Console.WriteLine(ex.Message);
         }
-    }
-
-    public class Reservations
-    {
-        public int Id { get; set; }
-        public string CustomerName { get; set; } = default!;
-        public DateTime CheckIn { get; set; }
-        public DateTime CheckOut { get; set; }
-        public decimal Price { get; set; }
     }
 }
