@@ -1,0 +1,35 @@
+﻿@page "/mail"
+@using System.Net.Mail
+@using System.Net
+
+<h3>MailService</h3>
+
+<button class="btn btn-primary" @onclick="SendMail">Click me</button>
+
+@code {
+    //Wont work if the mail or pw(password) is'nt inserted with a real mail
+    string mail = "****";
+    string pw = "****";
+
+    public async Task SendMail()
+    {
+        Console.WriteLine("test");
+
+        SmtpClient client = new SmtpClient("smtp-mail.outlook.com", 587)
+            {
+                EnableSsl = true,
+                Credentials = new NetworkCredential(mail, pw)
+            };
+
+        try
+        {
+            //Don't forget to make the (MailTo) to a real mail to send it to
+            await client.SendMailAsync(new MailMessage(mail, "MailTO", "Trinity hotel", "Confirmed"));
+            Console.WriteLine("Mail sent successfully.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to send mail: {ex.Message}");
+        }
+    }
+}
