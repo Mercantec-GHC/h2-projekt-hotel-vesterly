@@ -64,6 +64,7 @@
     public async Task GetTicketsFromDB()
     {
         tickets = await _httpClient.GetFromJsonAsync<List<Ticket>>("https://localhost:7207/Ticket");
+        tickets = tickets.OrderBy(ticket => ticket.Id).ToList();
     }
 }
 

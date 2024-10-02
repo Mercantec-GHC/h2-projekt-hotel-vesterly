@@ -76,7 +76,7 @@ namespace API.Controllers
         /// </summary>
         /// <param name="ticket"></param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromBody] Ticket ticket)
         {
             _context.Tickets.Update(ticket);

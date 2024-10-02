@@ -1,4 +1,4 @@
-﻿@page "/ticket/view/{TicketId:int}"
+﻿@page "/ticket/view/{ticketId:int}"
 @using DomainModels
 @using DomainModels.DB
 @using System.Net.Http.Json
@@ -14,7 +14,8 @@
             <MudText Typo="Typo.body2">Status: @ticket.status</MudText>
         </MudCardContent>
         <MudCardActions>
-            <MudButton Color="Color.Primary">Edit</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="@($"/ticket/edit/{ticketId}")">Edit</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => DeleteTicketInDB()">Delete</MudButton>
         </MudCardActions>
     </MudCard>
 </MudContainer>
@@ -34,5 +35,11 @@
     public async Task GetTicketFromDB()
     {
         ticket = await _httpClient.GetFromJsonAsync<Ticket>($"https://localhost:7207/Ticket/{ticketId}");
+    }
+
+    public async Task DeleteTicketInDB()
+    {
+        await _httpClient.DeleteAsync($"https://localhost:7207/Ticket/{ticketId}");
+        Navigation.NavigateTo("/ticket/view/");
     }
 }

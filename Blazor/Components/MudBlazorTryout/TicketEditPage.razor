@@ -1,0 +1,59 @@
+﻿@page "/ticket/edit/{ticketId:int}"
+@using DomainModels
+@using DomainModels.DB
+@using System.Net.Http.Json
+@using MudBlazor
+@inject HttpClient _httpClient
+
+<h3>Ticket</h3>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudCard Outlined="true">
+        <MudCardContent>
+            <MudTextField @bind-Value="ticket.Title" Label="Ticket title" HelperText="Title" Variant="Variant.Outlined" />
+            <MudTextField @bind-Value="ticket.Description" Label="Ticket description" HelperText="Description" Variant="Variant.Outlined" />
+        </MudCardContent>
+        <MudCardContent>
+            <MudSelect T="Status" Label="Status" @bind-Value="ticket.status">
+                @foreach (var status in StatusList)
+                {
+                    <MudSelectItem T="Status" Value="@status">@status</MudSelectItem>
+                }
+            </MudSelect>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => PutTicketToDB()">Save changes</MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudContainer>
+
+
+@code {
+    [Parameter]
+    public int ticketId { get; set; }
+
+    Ticket ticket = new();
+
+    List<Status> StatusList = Enum.GetValues(typeof(Status)).Cast<Status>().ToList();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetTicketFromDB();
+    }
+
+    public async Task GetTicketFromDB()
+    {
+        ticket = await _httpClient.GetFromJsonAsync<Ticket>($"https://localhost:7207/Ticket/{ticketId}");
+        ticket.Messages = await _httpClient.GetFromJsonAsync<List<Message>>($"https://localhost:7207/Ticket/{ticketId}/messages");
+        if (ticket.Messages == null)
+        {
+            ticket.Messages = new List<Message>();
+        }
+    }
+
+    public async Task PutTicketToDB()
+    {
+        await _httpClient.PutAsJsonAsync<Ticket>($"https://localhost:7207/Ticket/{ticketId}", ticket);
+        Navigation.NavigateTo($"/ticket/view/{ticketId}");
+    }
+}
