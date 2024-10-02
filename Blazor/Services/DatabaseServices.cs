@@ -2,6 +2,9 @@
 using DomainModels.DB;
 using DomainModels.DTO;
 using DomainModels.DTO.Reservation;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MudBlazor.Extensions;
 
 
 namespace Blazor.Services;
@@ -17,6 +20,7 @@ public class DatabaseServices
     {
         _http = http;
         _authService = authService;
+        
     }
 
 
@@ -24,7 +28,13 @@ public class DatabaseServices
     public async Task<List<Room>> GetRooms()
     {
 
-        return await _authService.GetFrom<List<Room>>(_baseURL + "Room/GetAll") ?? new();
+        return await _authService.GetFrom<List<Room>>(_baseURL + "Room") ?? new();
+    }
+
+
+    public async Task<List<string>> GetRoomTypes()
+    {
+        return await _http.GetFromJsonAsync<List<string>>(_baseURL + "Room/GetTypes") ?? new();
     }
 
     public async Task<GetRoomDetailsDTO> GetRoom(int id)
@@ -54,6 +64,10 @@ public class DatabaseServices
         return await _http.GetFromJsonAsync<List<Room>>(_baseURL + "Room/types") ?? new();
     }
 
+  
+
+
+
     //----- Reservation -------//
 
     public async Task <List<GetReservationsDTO>> GetAllReservations()
@@ -61,8 +75,32 @@ public class DatabaseServices
         return await _http.GetFromJsonAsync<List<GetReservationsDTO>>(_baseURL + "Reservations") ?? new();
     }
 
-    public Task<Reservation> GetReservationByIdAsync(int id)
+    public Task<Reservation> GetReservationById(int id)
     {
-        return _http.GetFromJsonAsync<Reservation>(_baseURL +"Reservations/{id}");
+        return _http.GetFromJsonAsync<Reservation>(_baseURL +$"Reservations/{id}");
+    }
+
+    public async Task UpdateReservation(Reservation reservation)
+    {
+        var reservationDTO = new ModifyReservationDTO
+        {
+            ReservationId = reservation.Id,
+            GuestName = reservation.GuestName,
+            GuestEmail = reservation.GuestEmail,
+            RoomType = reservation.Room.Type,
+            CheckIn = reservation.CheckIn,
+            CheckOut = reservation.CheckOut,
+        };
+
+        await _http.PutAsJsonAsync<ModifyReservationDTO>(_baseURL + "Reservations/update", reservationDTO);
+        
+       
+
+    }
+
+
+    public async Task DeleteReservation (int id)
+    {
+        await _http.DeleteAsync(_baseURL + $"Reservations/{id}");
     }
 }

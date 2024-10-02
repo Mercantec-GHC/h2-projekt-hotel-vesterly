@@ -41,6 +41,7 @@ namespace API.Controllers
             var reservations = await _context.Reservations.Include(x => x.Room).Include(x => x.Extras).ToListAsync();
             var reservationsDTO = reservations.ConvertAll(x => new GetReservationsDTO
             {
+                ReservationId = x.Id,
                 RoomType = x.Room.Type,
                 RoomNumber = x.Room.RoomNumber,
                 GuestName = x.GuestName,
@@ -62,9 +63,13 @@ namespace API.Controllers
         /// Get specific reservation by ID
         
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public IActionResult GetReservationById(int id)
         {
-            var reservation = await _context.Reservations.FindAsync(id);
+            var reservation =  _context.Reservations.Include(x => x.Room).Where(x => x.Id == id).First();
+            if (reservation == null)
+            {
+                return BadRequest("Reservation ID could not be found.");
+            }
             return Ok(reservation);
         }
 
@@ -85,7 +90,7 @@ namespace API.Controllers
             //var username = User.GetUsername();
             //var appuser = await _userManager.FindByNameAsync(username);
 
-            Room? room = await _context.Rooms.Include(r => r.Reservations).FirstAsync(r => r.Id == reservation.RoomId);
+            Room? room = await _context.Rooms.FirstAsync(r => r.Id == reservation.RoomId);
             //User? customer = _context.Users.FirstOrDefault(u => u.UserName == username);
 
             if (room == null)
@@ -97,7 +102,12 @@ namespace API.Controllers
             TimeSpan span = reservation.CheckOut - reservation.CheckIn;
 
             // Check if the room is available
-            if (room.Reservations.Any(r => ((r.CheckIn <= reservation.CheckOut && reservation.CheckIn < r.CheckOut) || (reservation.CheckIn <= r.CheckOut && r.CheckIn < reservation.CheckOut))))
+
+            room.BookedDates.Sort();
+            var checkIn = room.BookedDates.FirstOrDefault();
+            var checkOut = room.BookedDates.LastOrDefault();
+
+            if (room.BookedDates.Any(r => ((checkIn <= reservation.CheckOut && reservation.CheckIn < checkOut) || (reservation.CheckIn <= checkOut && checkIn < reservation.CheckOut))))
             {
                 return BadRequest("Room is already reserved for the selected dates.");
             }
@@ -117,6 +127,12 @@ namespace API.Controllers
             };
 
             _context.Reservations.Add(res);
+
+            room.BookedDates.AddRange(Enumerable
+                .Range(0, (int)(reservation.CheckOut - reservation.CheckIn).TotalDays)
+                .Select(i => DateTime.SpecifyKind(reservation.CheckIn, DateTimeKind.Utc)
+                .AddDays(i)));
+
             _context.SaveChanges();
             return Created();
         }
@@ -124,7 +140,7 @@ namespace API.Controllers
        
         /// Update reservation
         
-        [HttpPut]
+        [HttpPut("update")]
         //[Authorize]
         public async Task<IActionResult> Update(ModifyReservationDTO modifyReservation)
         {
@@ -139,7 +155,7 @@ namespace API.Controllers
             //var appuser = await _userManager.FindByNameAsync(username);
 
             // Find reservation by ID
-            var reservation = _context.Reservations.Find(modifyReservation.ReservationId);
+            var reservation = _context.Reservations.Include(x => x.Room).Where(x => x.Id == modifyReservation.ReservationId).First();
             if (reservation == null) {
                 return BadRequest("Reservation ID could not be found.");
             }
@@ -159,10 +175,26 @@ namespace API.Controllers
             {
                 return BadRequest("Room doesn't available.");
             }
-            //var availablecheckOut = existRooms.CheckIn >= modifyReservation.CheckOut;
-            //var availablecheckIn = Reservation.CheckOut <= modifyReservation.CheckIn;
-            var availableRoom = existRooms.FirstOrDefault(x => x.Reservations.All(r => r.CheckIn >= modifyReservation.CheckOut || r.CheckOut <= modifyReservation.CheckIn));
 
+            Room availibleRoom = null!;
+
+            foreach (var room in existRooms) { 
+                var checkIn = room.BookedDates.FirstOrDefault();
+                var checkOut = room.BookedDates.LastOrDefault();
+           
+                
+                var isRoomAvailable = checkIn >= modifyReservation.CheckOut || checkOut <= modifyReservation.CheckIn;
+                
+                if (isRoomAvailable) {
+                    availibleRoom = room;
+                    break;
+                }
+            }
+
+            if (availibleRoom == null)
+            {
+                return BadRequest("Room is already reserved for the selected dates.");
+            }
             // Modify reservation
             reservation.GuestName = modifyReservation.GuestName;
             reservation.GuestPhoneNr = modifyReservation.GuestPhoneNr;
@@ -170,7 +202,8 @@ namespace API.Controllers
             reservation.Room.Type = modifyReservation.RoomType;
             reservation.CheckIn = modifyReservation.CheckIn;
             reservation.CheckOut = modifyReservation.CheckOut;
-            _context.Reservations.Update(reservation);
+
+            _context.Entry(reservation).State = EntityState.Modified;
 
             // Save changes
             _context.SaveChanges();

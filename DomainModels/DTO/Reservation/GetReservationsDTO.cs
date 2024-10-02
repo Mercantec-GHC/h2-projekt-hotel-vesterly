@@ -9,6 +9,7 @@ namespace DomainModels.DTO.Reservation;
 
 public class GetReservationsDTO
 {
+    public int ReservationId { get; set; }
     public string GuestName { get; set; } = null!;
     public string GuestEmail { get; set; } = null!;
     public string? GuestPhoneNr { get; set; }

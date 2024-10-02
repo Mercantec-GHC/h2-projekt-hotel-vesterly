@@ -43,7 +43,7 @@
                     <MudTd>@context.Price</MudTd>
                     <MudTd>@context.GuestName</MudTd>
                     <MudTd>
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/editreservation">Edit</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => Navigation.NavigateTo($"/editreservation/{context.ReservationId}"))">View</MudButton>
                        @*  <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(async () => await DeleteReservation(context.Id))">Delete</MudButton> *@
                     </MudTd>
                 </RowTemplate>

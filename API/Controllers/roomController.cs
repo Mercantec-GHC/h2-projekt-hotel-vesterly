@@ -20,9 +20,10 @@ public class RoomController : ControllerBase
         _context = context;
     }
 
-    
-    
-    
+
+
+ 
+
     [HttpGet] // Get all room
     
     public async Task<ActionResult<IEnumerable<Room>>> GetAllRooms()
@@ -80,6 +81,12 @@ public class RoomController : ControllerBase
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
+    [HttpGet("GetTypes")]
+    public async Task<List<string>> GetRoomTypes()
+    {
+        return await _context.Rooms.Select(r => r.Type).Distinct().ToListAsync();
+    }
+
 
 
     // Add a new room
@@ -120,8 +127,7 @@ public class RoomController : ControllerBase
     
     /// Delete Room by ID
     
-    /// <param name="id">Integer ID of Room</param>
-    /// <returns>Status OK</returns>
+    
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
@@ -135,13 +141,7 @@ public class RoomController : ControllerBase
 
 
     
-    /// Search for rooms. 
     
-    /// <param name="query"></param>
-    /// <returns>A paginated list of rooms fitting the filters</returns>
-    /// <remarks>
-    /// Currently supports searching by RoomType tags, sorting by any property of the Room object, and lastly non zero-based pagination
-    /// </remarks>
     [HttpGet("Search")]
     public async Task<IActionResult> Search([FromQuery] SearchRoomQueryDTO query )
     {
@@ -189,8 +189,7 @@ public class RoomController : ControllerBase
    
     /// Get the details of a room as a nice to digest DTO
     
-    /// <param name="id"></param>
-    /// <returns></returns>
+   
     [HttpGet("RoomDetails/{id}")]
     public async Task<IActionResult> GetRoomDetails([FromRoute] int id)
     {
@@ -213,6 +212,49 @@ public class RoomController : ControllerBase
         return Ok(
             );
     }
+
+
+    [HttpGet("check-availability")]
+    public async Task<IActionResult> IsRoomAvailable(string roomType, DateTime checkIn, DateTime checkOut)
+    {
+        // Отримуємо всі кімнати заданого типу
+        var existRooms = await _context.Rooms.Where(x => x.Type == roomType).ToListAsync();
+
+        // Якщо немає кімнат такого типу, повертаємо помилку
+        if (existRooms.Count == 0)
+        {
+            return BadRequest("Room type doesn't exist.");
+        }
+
+        // Перевіряємо кожну кімнату на наявність перетинання бронювань
+        foreach (var room in existRooms)
+        {
+            var isRoomAvailable = true;
+
+            // Проходимо через масив BookedDays для перевірки на перетин
+            foreach (var bookedDay in room.BookedDates)
+            {
+                // Якщо хоча б один день перетинається з діапазоном бронювання, то кімната недоступна
+                if (bookedDay >= checkIn && bookedDay < checkOut)
+                {
+                    isRoomAvailable = false;
+                    break; // Виходимо з перевірки цієї кімнати
+                }
+            }
+
+            // Якщо кімната доступна, повертаємо Ok() з результатом true
+            if (isRoomAvailable)
+            {
+                return Ok(true); // Кімната доступна
+            }
+        }
+
+        // Якщо немає доступних кімнат, повертаємо Ok(false)
+        return Ok(false); // Кімнати недоступні
+    }
+
+
+
 }
 
 

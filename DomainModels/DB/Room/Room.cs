@@ -14,8 +14,8 @@ namespace DomainModels.DB
         public string Condition { get; set; } = "";
         public string Description { get; set; } = "";
         public virtual List<string> Tags { get; set; } = new List<string>();
-        public List<Reservation> Reservations { get; set; } = new List<Reservation>();
-
+    
+        public List <DateTime> BookedDates { get; set; } = new List<DateTime>();
     }
        public enum RoomStatus
         {
