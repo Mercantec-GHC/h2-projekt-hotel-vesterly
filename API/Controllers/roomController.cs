@@ -217,6 +217,28 @@ public class RoomController : ControllerBase
         return Ok(
             );
     }
+
+    [HttpGet("RoomDetails/{type}")]
+    public async Task<IActionResult> GetRoomDetailsByType([FromRoute] string type)
+    {
+        var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Type == type);
+
+        if (room == null)
+            return NotFound();
+
+        var roomDetails = new GetRoomDetailsDTO
+        {
+            Type = room.Type,
+            Beds = room.Beds,
+            Price = room.Price,
+            Condition = room.Condition
+        };
+
+        return Ok(roomDetails);
+    }
+
+
+
 }
 
 

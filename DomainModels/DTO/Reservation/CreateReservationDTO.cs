@@ -11,6 +11,9 @@ namespace DomainModels.DTO
     {
         [Required]
         public int RoomId { get; set; }
+        public string GuestName { get; set; } = null!;
+        public string GuestEmail { get; set; } = null!;
+        public string? GuestPhoneNr { get; set; }
         [Required]
         public DateTime CheckIn { get; set; }
         [Required]

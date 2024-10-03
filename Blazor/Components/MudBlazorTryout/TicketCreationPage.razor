@@ -5,11 +5,19 @@
 
 <h3>Ticket</h3>
 
-
-<MudTextField @bind-Value="ticket.Title" Label="Ticket title" HelperText="Title" Variant="Variant.Outlined"/>
-<MudTextField @bind-Value="ticket.Description" Label="Ticket description" HelperText="Description" Variant="Variant.Outlined" />
-
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => AddTicketToDB()">Primary</MudButton>
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudCard Outlined="true">
+        <MudPaper Class="pa-4">
+            <MudCardContent>
+                <MudTextField @bind-Value="ticket.Title" Label="Ticket title" HelperText="Title" Variant="Variant.Outlined" />
+                <MudTextField @bind-Value="ticket.Description" Label="Ticket description" HelperText="Description" Variant="Variant.Outlined" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => AddTicketToDB()">Save changes</MudButton>
+            </MudCardActions>
+        </MudPaper>
+    </MudCard>
+</MudContainer>
 
 @code {
     Ticket ticket = new Ticket()

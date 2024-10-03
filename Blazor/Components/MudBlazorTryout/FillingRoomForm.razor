@@ -1,0 +1,82 @@
+﻿@page "/roomForm/{roomType}"
+@using DomainModels.DTO
+@inject HttpClient Http
+
+
+@if (string.IsNullOrEmpty(RoomType))
+{
+    <h1>gfkjfdk</h1>
+}
+else
+{
+    <h1>@RoomType</h1>
+
+    <h3>Room Form</h3>
+    <MudPaper Height="900px" Width="100%">
+        <MudContainer MaxWidth="MaxWidth.Small">
+            <MudPaper Height="900px" Width="100%" Square="true" Class="mud-theme-primary">
+                <MudGrid>
+                    <MudItem xs="12" sm="7">
+                        <MudPaper Class="pa-4">
+                            <MudForm>
+                                <MudTextField T="string" Label="Room Type" Value="@roomDetails.Type" Disabled="true" />
+                                <MudTextField T="string" Label="Beds" Value="@roomDetails.Beds" Disabled="true" />
+                                <MudTextField T="string" Label="Price" Value="@roomDetails.Price.ToString()" Disabled="true" />
+                                <MudTextField T="string" Label="Condition" Value="@roomDetails.Condition" Disabled="true" />
+                            </MudForm>
+                        </MudPaper>
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudContainer>
+    </MudPaper>
+
+}
+
+@code {
+    [Parameter]
+    public string RoomType { get; set; } // Accept room type as a parameter
+
+    private GetRoomDetailsDTO roomDetails = new();
+
+    private List<GetRoomDetailsDTO> rooms = new List<GetRoomDetailsDTO>
+    {
+        new GetRoomDetailsDTO { Type = "Standard Single", Rooms = 10, Beds = "Single", Price = 100, Condition = "Good" },
+        new GetRoomDetailsDTO { Type = "Standard Double", Rooms = 10, Beds = "Double", Price = 100, Condition = "Good" },
+        new GetRoomDetailsDTO { Type = "Premium Single", Rooms = 5, Beds = "Single", Price = 300, Condition = "Excellent" },
+        new GetRoomDetailsDTO { Type = "Premium Double", Rooms = 5, Beds = "Double", Price = 300, Condition = "Excellent" },
+        new GetRoomDetailsDTO { Type = "Penthouse", Rooms = 2, Beds = "King", Price = 500, Condition = "Luxury" }
+    };
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            try
+            {
+                roomDetails = GetRoomDetails(RoomType);
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+        }
+    }
+
+    private GetRoomDetailsDTO GetRoomDetails(string rmType)
+    {
+        GetRoomDetailsDTO room = rooms.FirstOrDefault(x => x.Type == rmType)!;
+        if(room != null)
+        {
+            return room;
+        }
+        // Add error handling
+        return null;
+    }
+
+}
