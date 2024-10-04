@@ -13,6 +13,7 @@ namespace DomainModels.DB
         public RoomStatus Status { get; set; }
         public string Condition { get; set; } = "";
         public string Description { get; set; } = "";
+        public List<DateTime> BookedDates { get; set; } = new();
         public virtual List<string> Tags { get; set; } = new List<string>();
         public List<Reservation> Reservations { get; set; } = new List<Reservation>();
 

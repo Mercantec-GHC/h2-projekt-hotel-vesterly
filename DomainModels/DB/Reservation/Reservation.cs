@@ -14,6 +14,6 @@ namespace DomainModels.DB
         public DateTime CheckOut { get; set; }
         public User Customer { get; set; }
         public Room Room { get; set; }
-        public List<Extra> Extras { get; set; }
+        public List<Extra> Extras { get; set; } = new();
     }
 }
