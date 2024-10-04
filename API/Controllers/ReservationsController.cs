@@ -237,7 +237,11 @@ namespace API.Controllers
             //var appuser = await _userManager.FindByNameAsync(username);
             
             // Find reservation by ID
-            var reservation = await _context.Reservations.FindAsync(id);
+            var reservation = _context.Reservations.Include(b => b.Room.BookedDates).Where(b => b.Id == id).FirstOrDefault();
+            if (reservation == null)
+            {
+                return BadRequest("Reservation ID could not be found.");
+            }
 
             // Check if user is admin role or user role
             //if (!User.IsInRole("Admin"))
@@ -251,7 +255,7 @@ namespace API.Controllers
 
             // Remove reservation and save changes
             _context.Reservations.Remove(reservation);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Ok();
         }
     }
