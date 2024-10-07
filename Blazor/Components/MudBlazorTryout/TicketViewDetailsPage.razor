@@ -72,7 +72,18 @@
     public async Task GetTicketFromDB()
     {
         ticket = await _httpClient.GetFromJsonAsync<Ticket>($"https://localhost:7207/Ticket/{ticketId}");
-        messages = await _httpClient.GetFromJsonAsync<List<Message>>($"https://localhost:7207/Ticket/{ticketId}/messages");
+        try
+        {
+            messages = await _httpClient.GetFromJsonAsync<List<Message>>($"https://localhost:7207/Ticket/{ticketId}/messages");
+            if (messages == null)
+            {
+                messages = new List<Message>();
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"Error fetching ticket or messages: {ex.Message}");
+        }
 
         StateHasChanged();
     }
