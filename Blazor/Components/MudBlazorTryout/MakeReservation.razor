@@ -43,15 +43,19 @@ else if (roomFound)
     <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
         <MudCard Outlined="true">
             <MudCardContent>
-            <MudText>Name: @reservation.GuestName</MudText>
-            <MudText Typo="Typo.body2">@reservation.GuestEmail</MudText>
-            <MudText Typo="Typo.body2">Status: @reservation.GuestPhoneNr</MudText>
-            <MudText>Name: @reservation.GuestName</MudText>
-            <MudText Typo="Typo.body2">@reservation.GuestEmail</MudText>
-            <MudText Typo="Typo.body2">Status: @reservation.GuestPhoneNr</MudText>
+                <MudText>Name: @reservation.GuestName</MudText>
+                <MudText Typo="Typo.body2">Email: @reservation.GuestEmail</MudText>
+                <MudText Typo="Typo.body2">Phone number: @reservation.GuestPhoneNr</MudText>
+                <MudText>Checkin date: @reservation.CheckIn.ToShortDateString()</MudText>
+                <MudText Typo="Typo.body2">Checkout Date: @reservation.CheckOut.ToShortDateString()</MudText>
+                <MudText Typo="Typo.body2">Room: @reservation.Room.Type</MudText>
             </MudCardContent>
         </MudCard>
     </MudContainer>
+}
+else
+{
+    <p>There was an error with creating your booking</p>
 }
 
 @code {
