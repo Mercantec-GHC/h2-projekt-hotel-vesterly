@@ -10,9 +10,6 @@ using Microsoft.EntityFrameworkCore;
 namespace API.Controllers;
 
 
-/// Controller for reservation endpoints
-/// Most likely wanna later add some more complex logic here to handle creation of reservations based off of user and room availability and such.
-
 [ApiController]
 [Route("[controller]")]
 public class ReservationsController : Controller
@@ -151,7 +148,7 @@ public class ReservationsController : Controller
     }
 
 
-    /// Update reservation
+   
 
     [HttpPut("update")]
     [Authorize]
@@ -167,7 +164,7 @@ public class ReservationsController : Controller
         var username = User.GetUsername();
         var appuser = await _userManager.FindByNameAsync(username);
 
-        
+
 
 
         // Find reservation by ID
@@ -183,15 +180,15 @@ public class ReservationsController : Controller
             return BadRequest("Reservation ID could not be found.");
         }
 
-        // Check if user is admin role or user role
+        Check if user is admin role or user role
         if (!User.IsInRole("Admin"))
-        {
-            // User can only update their own reservation
-            if (reservation.Customer.Id != appuser.Id)
             {
-                return Unauthorized("You can only modify your own reservations!");
+                // User can only update their own reservation
+                if (reservation.Customer.Id != appuser.Id)
+                {
+                    return Unauthorized("You can only modify your own reservations!");
+                }
             }
-        }
 
         var existRooms = _context.Rooms
             .Where(x => x.Type == modifyReservation.RoomType)
@@ -206,9 +203,6 @@ public class ReservationsController : Controller
 
         foreach (var room in existRooms)
         {
-
-
-
             var isRoomAvailable = !room.BookedDates
                 .Any(d => d >= modifyReservation.CheckIn && d < modifyReservation.CheckOut);
 
@@ -246,7 +240,6 @@ public class ReservationsController : Controller
     }
 
 
-    /// Delete reservation by ID
 
     [HttpDelete("{id}")]
     //[Authorize]
