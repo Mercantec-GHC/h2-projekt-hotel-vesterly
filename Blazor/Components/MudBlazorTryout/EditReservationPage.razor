@@ -35,8 +35,9 @@
                             <MudTextField Disabled="@isDisabled" @bind-Value="reservation.GuestEmail" Label="Email" Required="true" />
                             <MudTextField Disabled="@isDisabled" @bind-Value="reservation.GuestPhoneNr" Label="Phone Number" />
 
-                            <MudDatePicker Disabled="@isDisabled" @bind-Value="reservation.CheckIn" Label="Check-In Date" Required="true" />
-                            <MudDatePicker Disabled="@isDisabled" @bind-Value="reservation.CheckOut" Label="Check-Out Date" Required="true" />
+
+                            <MudDatePicker Disabled="@isDisabled" @bind-Date="checkInDate" Label="Check-In Date" Required="true" />
+                            <MudDatePicker Disabled="@isDisabled" @bind-Date="checkOutDate" Label="Check-Out Date" Required="true" />
 
                             <MudSelect T="string" Disabled="@isDisabled" @bind-Value="reservation.Room.Type" Label="Room Type" Required="true" @onchange="RoomTypeChanged">
                                 @foreach (var roomType in roomTypes)
@@ -65,7 +66,10 @@
     private string editButtonText = "Edit";
     private List<string> roomTypes = new List<string>();
     private Dictionary<string, int> roomPrices = new Dictionary<string, int>();
-    
+    private DateTime? checkInDate;
+    private DateTime? checkOutDate;
+
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -105,6 +109,11 @@
         try
         {
             reservation = await DatabaseServicesInstance.GetReservationById(ReservationId);
+
+            checkInDate = reservation.CheckIn;
+            checkOutDate = reservation.CheckOut;
+
+
             if (roomPrices.ContainsKey(reservation.Room.Type))
             {
                 reservation.Room.Price = roomPrices[reservation.Room.Type];
@@ -122,14 +131,14 @@
         string selectedRoomType = args.Value?.ToString();
         if (!string.IsNullOrEmpty(selectedRoomType))
         {
-            
+
             bool isRoomAvailable = await DatabaseServicesInstance.IsRoomAvailable(selectedRoomType, reservation.CheckIn, reservation.CheckOut);
             if (isRoomAvailable)
             {
                 if (roomPrices.ContainsKey(selectedRoomType))
                 {
-                    reservation.Room.Price = roomPrices[selectedRoomType]; 
-                    reservation.Room.Type = selectedRoomType; 
+                    reservation.Room.Price = roomPrices[selectedRoomType];
+                    reservation.Room.Type = selectedRoomType;
                     StateHasChanged();
                 }
             }
@@ -152,6 +161,9 @@
     {
         try
         {
+            reservation.CheckIn = checkInDate ?? reservation.CheckIn;
+            reservation.CheckOut = checkOutDate ?? reservation.CheckOut;
+                
             await DatabaseServicesInstance.UpdateReservation(reservation);
             successMessage = "Reservation updated successfully!";
             errorMessage = "";
