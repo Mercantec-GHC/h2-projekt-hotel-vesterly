@@ -269,15 +269,15 @@ public class ReservationsController : Controller
 
         foreach (var reservation in res)
         {
-            // Обчислюємо кількість днів між датами CheckIn і CheckOut
+            
             int totalDays = (int)(reservation.CheckOut - reservation.CheckIn).TotalDays;
 
-            // Створюємо послідовність дат від CheckIn до CheckOut
+            
             var bookingDates = Enumerable.Range(0, totalDays)
                 .Select(i => reservation.CheckIn.AddDays(i))
                 .ToList();
 
-            // Додаємо ці дати до списку BookedDates у кімнаті
+           
             room.BookedDates.AddRange(bookingDates);
 
           
