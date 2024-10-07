@@ -40,7 +40,9 @@ namespace API.Controllers
             }
 
             // Find the user by username
-            var user = await _userManager.FindByNameAsync(loginDTO.Username);
+            List<User> users = _userManager.Users.ToList();
+
+            var user = users.First(e => e.UserName == loginDTO.Username);
 
             // If the user is not found, return unauthorized
             if (user == null)

@@ -14,6 +14,8 @@ namespace API.Controllers
     /// 
     /// Most likely wanna later add some more complex logic here to handle creation of reservations based off of user and room availability and such.
     /// </summary>
+    /// 
+    [IgnoreAntiforgeryToken]
     [ApiController]
     [Route("[controller]")]
     public class ReservationsController : Controller
@@ -68,7 +70,7 @@ namespace API.Controllers
         /// <returns>Status CREATED</returns>
         [HttpPost]
         //[Authorize]
-        public async Task<IActionResult> Post([FromBody] CreateReservationDTO reservation)
+        public async Task<IActionResult> Post([FromBody] Reservation reservation)
         {
             // Check if the data fulfills the requirements of the DTO
             if (!ModelState.IsValid)
@@ -92,7 +94,7 @@ namespace API.Controllers
                 customer = await _userManager.FindByNameAsync("a");
             }
 
-            Room? room = await _context.Rooms.Include(r => r.Reservations).FirstAsync(r => r.Id == reservation.RoomId);
+            Room? room = await _context.Rooms.Include(r => r.Reservations).FirstAsync(r => r.Id == reservation.Room.Id);
 
             if (room == null || customer == null)
             {
@@ -201,5 +203,6 @@ namespace API.Controllers
             _context.SaveChanges();
             return Ok();
         }
+
     }
 }

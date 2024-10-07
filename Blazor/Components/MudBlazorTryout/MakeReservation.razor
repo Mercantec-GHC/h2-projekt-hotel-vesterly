@@ -1,0 +1,156 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using DomainModels.DB
+@inject HttpClient _httpClient
+@inject AuthenticationStateProvider _authStateProvider
+
+@page "/Reservations/Post"
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+
+@if (!bookingCompleted)
+{
+    <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+        <MudCard Outlined="true">
+            <MudCardContent>
+                <MudDatePicker @bind-Date="CheckIn" Label="Check in date" HelperText="Check in date" Variant="Variant.Outlined" />
+                @* <MudText Typo="Typo.body2">@CheckIn.Value</MudText> *@
+                <MudDatePicker @bind-Date="CheckOut" Label="Check out date" HelperText="Check out date" Variant="Variant.Outlined" />
+                @* <MudText Typo="Typo.body2">@CheckOut.Value</MudText> *@
+                <MudTextField @bind-Value="reservation.GuestName" Label="(Required) Guest name" HelperText="(Required) Guest name" Variant="Variant.Outlined" />
+                <MudTextField @bind-Value="reservation.GuestEmail" Label="(Required) Guest email" HelperText="(Required) Guest email" Variant="Variant.Outlined" />
+                <MudTextField @bind-Value="reservation.GuestPhoneNr" Label="(Optional) Guest phone number" HelperText="(Optional) Guest phone number" Variant="Variant.Outlined" />
+            </MudCardContent>
+            <MudCardContent>
+                <MudSelect T="string" Label="Room type" @bind-Value="roomType">
+                    <MudSelectItem T="string" Value="@("standard single")">standard single</MudSelectItem>
+                    <MudSelectItem T="string" Value="@("standard double")">standard double</MudSelectItem>
+                    <MudSelectItem T="string" Value="@("premium single")">premium single</MudSelectItem>
+                    <MudSelectItem T="string" Value="@("premium double")">premium double</MudSelectItem>
+                    <MudSelectItem T="string" Value="@("penthouse")">penthouse</MudSelectItem>
+                </MudSelect>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => PostReservationToDB()">Make reservation</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudContainer>
+}
+else if (roomFound)
+{
+    <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+        <MudCard Outlined="true">
+            <MudCardContent>
+            <MudText>Name: @reservation.GuestName</MudText>
+            <MudText Typo="Typo.body2">@reservation.GuestEmail</MudText>
+            <MudText Typo="Typo.body2">Status: @reservation.GuestPhoneNr</MudText>
+            <MudText>Name: @reservation.GuestName</MudText>
+            <MudText Typo="Typo.body2">@reservation.GuestEmail</MudText>
+            <MudText Typo="Typo.body2">Status: @reservation.GuestPhoneNr</MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudContainer>
+}
+
+@code {
+    Reservation reservation = new Reservation();
+
+    bool bookingCompleted = false;
+    bool roomFound = false;
+
+    string roomType;
+    int price;
+
+    DateTime? CheckIn;
+    DateTime? CheckOut;
+
+    User user = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUser();
+        reservation.GuestName = $"{user.FirstName} {user.LastName}";
+        reservation.GuestEmail = user.Email;
+        reservation.GuestPhoneNr = user.PhoneNumber;
+    }
+
+    public async Task PostReservationToDB()
+    {
+        await GetUser();
+        reservation.Customer = user;
+        reservation.CheckIn = DateTime.SpecifyKind(CheckIn.Value, DateTimeKind.Utc);
+        reservation.CheckOut = DateTime.SpecifyKind(CheckOut.Value, DateTimeKind.Utc);
+        await GetRoom();
+        await EditRoom();
+        await _httpClient.PostAsJsonAsync<Reservation>($"https://localhost:7207/Reservations", reservation);
+
+    }
+
+    public async Task GetUser()
+    {
+        var authState = await _authStateProvider.GetAuthenticationStateAsync();
+        var loggedInUser = authState.User;
+
+        if (loggedInUser != null)
+        {
+            var username = loggedInUser.FindFirst("given_name").Value;
+            user = await _httpClient.GetFromJsonAsync<User>($"https://localhost:7207/User/Username/{username}");
+        }
+    }
+
+    public async Task GetRoom()
+    {
+        List<Room> rooms = await _httpClient.GetFromJsonAsync<List<Room>>("https://localhost:7207/Room");
+
+
+        bookingCompleted = true;
+        foreach (Room room in rooms)
+        {
+            if (room.Type == roomType)
+            {
+                bool roomBooked = false;
+                foreach (DateTime BookedDate in room.BookedDates)
+                {
+                    var tempDate = reservation.CheckIn;
+
+                    while (tempDate.Date < reservation.CheckOut.Date)
+                    {
+                        if (tempDate.Date == BookedDate.Date)
+                        {
+                            roomBooked = true;
+                            break;
+                        }
+
+                        tempDate = tempDate.AddDays(1);
+                    }
+
+                    if (roomBooked)
+                    {
+                        break;
+                    }
+                }
+                if (!roomBooked)
+                {
+                    roomFound = true;
+                    reservation.Room = room;
+
+                    break;
+                }
+            }
+        }
+    }
+
+    public async Task EditRoom()
+    {
+        DateTime tempDate = reservation.CheckIn;
+        while (tempDate.Date < reservation.CheckOut.Date)
+        {
+            reservation.Room.BookedDates.Add(DateTime.SpecifyKind(tempDate, DateTimeKind.Utc));
+            tempDate = tempDate.AddDays(1);
+        }
+
+        _httpClient.PutAsJsonAsync<Room>("https://localhost:7207/Room", reservation.Room);
+    }
+}

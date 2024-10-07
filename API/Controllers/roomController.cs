@@ -112,7 +112,7 @@ public class RoomController : ControllerBase
     /// <param name="room">Room object</param>
     /// <returns>Status OK with modified Room</returns>
     [HttpPut]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update([FromBody] Room room) 
     {
         // Currently the simplest CRUD operation

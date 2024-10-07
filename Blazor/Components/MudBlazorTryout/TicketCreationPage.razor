@@ -2,6 +2,7 @@
 @using DomainModels
 @using DomainModels.DB
 @using System.Net.Http.Json
+@inject NavigationManager _navManager
 
 <h3>Ticket</h3>
 
@@ -20,6 +21,7 @@
 </MudContainer>
 
 @code {
+    bool programRunning = false;
     Ticket ticket = new Ticket()
         {
             status = Status.WorkInProgress
@@ -29,7 +31,13 @@
 
     public async Task AddTicketToDB()
     {
-        await _httpClient.PostAsJsonAsync("https://localhost:7207/Ticket", ticket);
+        if (!programRunning)
+        {
+            programRunning = true;
+            await _httpClient.PostAsJsonAsync("https://localhost:7207/Ticket", ticket);
+            _navManager.NavigateTo("/ticket/view");
+            programRunning = false;
+        }
     }
 }
 
