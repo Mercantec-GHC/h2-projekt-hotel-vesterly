@@ -9,9 +9,9 @@ using System.Text.Json;
 
 namespace Blazor.Auth
 {
-    /// <summary>
+   
     /// AuthStateProvide is a custom authenticationStateProvider that we will use to handle the state of the users login
-    /// </summary>
+  
     public class AuthStateProvide : AuthenticationStateProvider
     {
         // here we instanciate global variables within the class that lets us use the localstorage, httpclient features,
@@ -27,11 +27,10 @@ namespace Blazor.Auth
             _http = http;
         }
 
-        /// <summary>
+       
         /// This function is an already existing function within the AuthenticationStateProvider class, so here we use an override to adjust it to our needs.
         /// The GetAuthenticationStateAsync gets the state of the currently logged in (authenticated) user. 
-        /// </summary>
-        /// <returns></returns>
+        
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             // gets the token from localstorage
@@ -56,11 +55,9 @@ namespace Blazor.Auth
             return authState;
         }
 
-        /// <summary>
+        
         /// This function is used to authenticate the user, it takes in a token as an argument and sets the token in the local storage.
-        /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
+      
         public async Task AuthenticateUser(string token)
         {
             await _sesseionStorage.SetItemAsync("authToken", token);
@@ -71,11 +68,9 @@ namespace Blazor.Auth
             NotifyAuthenticationStateChanged(authState);
         }
 
-        /// <summary>
+      
         /// This function is used to get the claims identity from the token.
-        /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
+       
         public ClaimsIdentity GetClaimsIdentity(string token)
         {
             // Here we use the JwtSecurityTokenHandler to read the jwt token and extract the claims from it.
@@ -85,10 +80,9 @@ namespace Blazor.Auth
             return new ClaimsIdentity(claims, "jwt");
         }
 
-        /// <summary>
+      
         /// This function is used to log out the user, it removes the token from the local storage.
-        /// </summary>
-        /// <returns></returns>
+       
         public async Task Logout()
         {
             await _sesseionStorage.RemoveItemAsync("authToken");

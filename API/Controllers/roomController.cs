@@ -20,36 +20,26 @@ public class RoomController : ControllerBase
         _context = context;
     }
 
-
-
- 
-
-    [HttpGet] // Get all room
+    [HttpGet]
     
     public async Task<ActionResult<IEnumerable<Room>>> GetAllRooms()
     {
-        // Currently the simplest CRUD operation
         var room = await _context.Rooms.ToListAsync();
         
-        // <returns>Status OK with the list of rooms</returns>
         return Ok(room);
     }
 
    
-    // Get specific ID of room
-    
-    [HttpGet("{id}")]// <param name="id">This is the id in the database of the room you want to select</param>
+    [HttpGet("{id}")]
     public async Task<ActionResult<Room>> GetRoom(int id)
     {
-        // Currently the simplest CRUD operation
         var room = await _context.Rooms.FindAsync(id);
-        //Just in case null it returns not found
+       
         if (room == null)
         {
             return NotFound();
         }
-
-    // <returns>Status OK with room</returns>
+        
         return Ok(room);
     }
 
@@ -89,10 +79,7 @@ public class RoomController : ControllerBase
 
 
 
-    // Add a new room
-
-    /// <param name="room">Room object</param>
-    /// <returns>Status OK with new room</returns>
+   
     [HttpPost]
     //[Authorize(Roles = "Admin")]
     public async Task<IActionResult> Post(PostRoomDTO roomDTO) 
@@ -110,10 +97,6 @@ public class RoomController : ControllerBase
         return Ok(room);
     }
 
-    /// Update Room
-    
-    /// <param name="room">Room object</param>
-    /// <returns>Status OK with modified Room</returns>
     [HttpPut]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update([FromBody] Room room) 
@@ -124,10 +107,6 @@ public class RoomController : ControllerBase
         return Ok(room);
     }
 
-    
-    /// Delete Room by ID
-    
-    
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
@@ -139,9 +118,6 @@ public class RoomController : ControllerBase
         return Ok(room);
     }
 
-
-    
-    
     [HttpGet("Search")]
     public async Task<IActionResult> Search([FromQuery] SearchRoomQueryDTO query )
     {
@@ -196,21 +172,11 @@ public class RoomController : ControllerBase
         var room = await _context.Rooms.FindAsync(id);
 
         if (room == null)
+        {
             return NotFound();
+        }
 
-
-
-        //var roomDetails = new GetRoomDetailsDTO
-        //{
-
-        //    Beds = room.Beds,
-        //    Price = room.Price,
-        //    Status = room.Status,
-        //    Condition = room.Condition
-        //};
-
-        return Ok(
-            );
+        return Ok();
     }
 
 
@@ -252,10 +218,6 @@ public class RoomController : ControllerBase
         // If no rooms are available, return Ok(false)
         return Ok(false); // The rooms are unavailable
     }
-
-
-
-
 }
 
 

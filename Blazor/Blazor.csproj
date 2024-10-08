@@ -9,27 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Components\MudBlazorTryout\Employee.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.8" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="MudBlazor" Version="7.6.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Components\MudBlazorTryout\Employee.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Components\MudBlazorTryout\Employee.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Components\MudBlazorTryout\Employee.razor" />
   </ItemGroup>
 
   <ItemGroup>

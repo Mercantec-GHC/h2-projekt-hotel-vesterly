@@ -21,10 +21,7 @@ namespace API.Data
 
         public DbSet<Admin> Admins { get; set; }
 
-        /// <summary>
-        /// When the db model is created it will execute this method
-        /// </summary>
-        /// <param name="builder"></param>
+       
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

@@ -44,7 +44,6 @@
                     <MudTd>@context.GuestName</MudTd>
                     <MudTd>
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => Navigation.NavigateTo($"/editreservation/{context.ReservationId}"))">View</MudButton>
-                       @*  <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(async () => await DeleteReservation(context.Id))">Delete</MudButton> *@
                     </MudTd>
                 </RowTemplate>
             </MudTable>
@@ -79,33 +78,4 @@
     {
         Navigation.NavigateTo("/createreservation");
     }
-
-    
-    
-
-    //class that implements delete function on the razor page which deletes the entry, requires admin login.
-    // private async Task DeleteReservation(int id)
-    // {
-    //     try
-    //     {
-    //         //call the api with a Delete call for the specific id, if successful call, reload reservations to show updated list.
-    //         //GetHttpClient() is a function within the AuthService.cs which then includes the login information in the header, since only admin has delete permission.
-    //         var response = await Http.GetHttpClient().DeleteAsync($"https://localhost:7207/Reservations/{id}");
-    //         if (response.IsSuccessStatusCode)
-    //         {
-    //             await LoadReservations();
-    //         }
-    //         else
-    //         {
-    //             Console.WriteLine("Failed to delete the reservation.");
-    //         }
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Console.WriteLine(ex.Message);
-    //     }
-    // }
-
-    
-    
 }

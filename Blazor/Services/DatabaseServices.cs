@@ -20,9 +20,7 @@ public class DatabaseServices
     {
         _http = http;
         _authService = authService;
-        
     }
-
 
     //----- Room -------//
     public async Task<List<Room>> GetRooms()
@@ -30,7 +28,6 @@ public class DatabaseServices
 
         return await _authService.GetFrom<List<Room>>(_baseURL + "Room") ?? new();
     }
-
 
     public async Task<List<string>> GetRoomTypes()
     {
@@ -70,8 +67,6 @@ public class DatabaseServices
         return await _http.GetFromJsonAsync<bool>(url);
     }
 
-
-
     //----- Reservation -------//
 
     public async Task <List<GetReservationsDTO>> GetAllReservations()
@@ -99,11 +94,7 @@ public class DatabaseServices
         };
 
         await _http.PutAsJsonAsync<ModifyReservationDTO>(_baseURL + "Reservations/update", reservationDTO);
-        
-       
-
     }
-
 
     public async Task DeleteReservation (int id)
     {

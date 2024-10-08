@@ -8,9 +8,9 @@ using System.Text;
 
 namespace API.Services
 {
-    /// <summary>
+  
     /// Token service for creating JWT tokens with the use of the appsettings.json file
-    /// </summary>
+ 
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _config;
@@ -25,11 +25,9 @@ namespace API.Services
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SecretKey"]));
         }
 
-        /// <summary>
+       
         /// Create a JWT token for a user
-        /// </summary>
-        /// <param name="user">User object gotten through the use of a db context</param>
-        /// <returns>JWT token as a string</returns>
+        
         public string CreateToken(User user)
         {
             // Create a list of claims for the user (claims are known bits of information that can be sent in the token)
@@ -69,25 +67,21 @@ namespace API.Services
 
     }
 
-    /// <summary>
+   
     /// Interface for the token service
-    /// </summary>
+   
     public interface ITokenService
     {
-        /// <summary>
+        
         /// Create a JWT token for a user
-        /// </summary>
-        /// <param name="user">User object gotten through the use of a db context</param>
-        /// <returns>JWT token as a string</returns>
+        
         public string CreateToken(User user);
     }
 
-    /// <summary>
+  
     /// Post configuration options for the JWT bearer
-    /// </summary>
-    /// <remarks>
     /// Currently not used, but can be used to configure the JWT bearer options
-    /// </remarks>
+   
     public sealed class JwtBearerPostConfigurationOptions : IPostConfigureOptions<JwtBearerOptions>
     {
         private readonly IHttpClientFactory _httpClientFactory;
