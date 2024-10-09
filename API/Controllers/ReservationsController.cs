@@ -180,7 +180,7 @@ public class ReservationsController : Controller
             return BadRequest("Reservation ID could not be found.");
         }
 
-        Check if user is admin role or user role
+        //Check if user is admin role or user role
         if (!User.IsInRole("Admin"))
             {
                 // User can only update their own reservation

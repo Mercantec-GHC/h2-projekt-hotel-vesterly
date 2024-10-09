@@ -29,11 +29,11 @@
 
                 <MudCardActions Class="d-flex" Style="justify-content:space-around">
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
-                               Style="width:45%;" OnClick="@(() => FetchRoomDetailsAndNavigate("Standard Single"))">
+                               Style="width:45%;">
                         Enkeltværelse
                     </MudButton>
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
-                               Style="width:45%;" OnClick="@(() => FetchRoomDetailsAndNavigate("Standard Double"))">
+                               Style="width:45%;" >
                         Dobbeltværelse
                     </MudButton>
                 </MudCardActions>
@@ -59,11 +59,11 @@
 
                 <MudCardActions Class="d-flex" Style="justify-content:space-around">
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
-                               Style="width:45%;" OnClick="@(() => FetchRoomDetailsAndNavigate("Premium Single"))">
+                               Style="width:45%;">
                         Enkeltværelse
                     </MudButton>
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
-                               Style="width:45%;" OnClick="@(() => FetchRoomDetailsAndNavigate("Premium Double"))">
+                               Style="width:45%;" >
                         Dobbeltværelse
                     </MudButton>
                 </MudCardActions>
@@ -88,7 +88,7 @@
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-center">
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
-                               Style="width:50%;" OnClick="@(() => FetchRoomDetailsAndNavigate("Penthouse"))">
+                               Style="width:50%;" >
                         Se værelser
                     </MudButton>
                 </MudCardActions>
@@ -99,36 +99,42 @@
 
 
 @code {
-    // Mock room data
-    private List<GetRoomDetailsDTO> rooms = new List<GetRoomDetailsDTO>
-    {
-        new GetRoomDetailsDTO { Type = "Standard Single", Rooms = 10, Beds = "Single", Price = 100, Condition = "Good" },
-        new GetRoomDetailsDTO { Type = "Standard Double", Rooms = 10, Beds = "Double", Price = 100, Condition = "Good" },
-        new GetRoomDetailsDTO { Type = "Premium Single", Rooms = 5, Beds = "Single", Price = 300, Condition = "Excellent" },
-        new GetRoomDetailsDTO { Type = "Premium Double", Rooms = 5, Beds = "Double", Price = 300, Condition = "Excellent" },
-        new GetRoomDetailsDTO { Type = "Penthouse", Rooms = 2, Beds = "King", Price = 500, Condition = "Luxury" }
-    };
+    private int PriseSingleStandart = 0;
+    private int PriseDoubleStandart = 0;
+    private int PriseSinglePremium = 0;
+    private int PriseDoublePremium = 0;
+    private int PrisePenthouse = 0;
+    private string Curency = "DKK";
 
-    // Method to get room details based on type
-    private GetRoomDetailsDTO GetRoomDetailsByType(string type)
+    protected override async Task OnInitializedAsync()
     {
-        return rooms.FirstOrDefault(room => room.Type == type);
+        await GetAllRoomsTypes();
     }
 
-    // Method to fetch room details and navigate to the room form
-    private void FetchRoomDetailsAndNavigate(string roomType)
+    async Task GetAllRoomsTypes()
     {
-        var roomDetails = GetRoomDetailsByType(roomType);
-        if (roomDetails != null)
+        var rooms = await DatabaseServicesInstance.GetAllRoomsTypes();
+
+        foreach (var room in rooms)
         {
-            NavigateToRoomForm(roomDetails);
+            switch (room.Type)
+            {
+                case "standard single":
+                    PriseSingleStandart = room.Price;
+                    break;
+                case "standard double":
+                    PriseDoubleStandart = room.Price;
+                    break;
+                case "premium single":
+                    PriseSinglePremium = room.Price;
+                    break;
+                case "premium double":
+                    PriseDoublePremium = room.Price;
+                    break;
+                case "penthouse":
+                    PrisePenthouse = room.Price;
+                    break;
+            }
         }
-    }
-
-    // Navigate only using the room type
-    private void NavigateToRoomForm(GetRoomDetailsDTO roomDetails)
-    {
-        // Navigate to the room form page using only room type
-        NavigationManager.NavigateTo($"/roomForm/{roomDetails.Type}");
     }
 }

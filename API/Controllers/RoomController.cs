@@ -209,8 +209,7 @@ public class RoomController : ControllerBase
         //    Condition = room.Condition
         //};
 
-        return Ok(
-            );
+        return Ok();
     }
 
 
@@ -251,6 +250,8 @@ public class RoomController : ControllerBase
 
         // If no rooms are available, return Ok(false)
         return Ok(false); // The rooms are unavailable
+    }
+
     [HttpGet("RoomDetails/{type}")]
     public async Task<IActionResult> GetRoomDetailsByType([FromRoute] string type)
     {

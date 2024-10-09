@@ -72,8 +72,8 @@
     {
         // first we will make a post request registering the user and then return a true or false once the user is registered.
         var response = await authService.Register(model!);
-        success = response.IsSuccessStatusCode;
-        pwReqs = await response.Content.ReadFromJsonAsync<List<PWErrMsg>>();
+        //success = response.IsSuccessStatusCode;
+        //pwReqs = await response.Content.ReadFromJsonAsync<List<PWErrMsg>>();
 
         //Here we instanciate a new LoginDTO object and set the Username and Password to the values from the model.
         LoginDTO loginDTO = new LoginDTO { Username = model.Username, Password = model.Password };
