@@ -25,14 +25,9 @@ public class ReservationsController : Controller
         _userManager = userManager;
     }
 
-
-
-
-
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-
         var reservations = await _context.Reservations.Include(x => x.Room).Include(x => x.Extras).ToListAsync();
         var reservationsDTO = reservations.ConvertAll(x => new GetReservationsDTO
         {
@@ -47,11 +42,7 @@ public class ReservationsController : Controller
             CheckOut = x.CheckOut
         });
 
-
-
-
         return Ok(reservationsDTO);
-
     }
 
     [HttpGet("byUsername/{username}")]
@@ -60,8 +51,6 @@ public class ReservationsController : Controller
         var reservations = await _context.Reservations.Where(r => r.Customer.UserName == username).ToListAsync();
         return Ok(reservations);
     }
-
-
 
 
     [HttpGet("{id}")]
@@ -75,10 +64,7 @@ public class ReservationsController : Controller
         return Ok(reservation);
     }
 
-
-
-
-    [HttpPost]
+    [HttpPost("create")]
     //[Authorize]
     public async Task<IActionResult> Post([FromBody] Reservation reservation)
     {
@@ -130,7 +116,7 @@ public class ReservationsController : Controller
 
         Reservation res = new Reservation
         {
-            
+
             GuestName = reservation.GuestName,
             GuestPhoneNr = reservation.GuestPhoneNr,
             GuestEmail = reservation.GuestEmail,
@@ -148,7 +134,7 @@ public class ReservationsController : Controller
     }
 
 
-   
+
 
     [HttpPut("update")]
     [Authorize]
@@ -180,7 +166,7 @@ public class ReservationsController : Controller
             return BadRequest("Reservation ID could not be found.");
         }
 
-        //Check if user is admin role or user role
+        Check if user is admin role or user role
         if (!User.IsInRole("Admin"))
             {
                 // User can only update their own reservation
@@ -188,7 +174,7 @@ public class ReservationsController : Controller
                 {
                     return Unauthorized("You can only modify your own reservations!");
                 }
-            }
+        }
 
         var existRooms = _context.Rooms
             .Where(x => x.Type == modifyReservation.RoomType)

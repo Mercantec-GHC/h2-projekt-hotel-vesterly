@@ -28,8 +28,8 @@ namespace API.Controllers
         }
 
         /// Login endpoint
-        /// <param name="loginDTO">Login DTO consisting of username and password</param>
-        /// <returns>UserTokenDTO which consists of username, email, and JWT token used in future requests to locked services</returns>
+        /// Login DTO consisting of username and password
+        /// UserTokenDTO which consists of username, email, and JWT token used in future requests to locked services
         [HttpPost]
         public async Task<IActionResult> Login(LoginDTO loginDTO)
         {
@@ -70,11 +70,10 @@ namespace API.Controllers
 
         }
 
-        /// <summary>
+        
         /// Register a new user
-        /// </summary>
-        /// <param name="createUsersDTO">CreateUserDTO consisting of usernname, firstname, lastname, phonenumber, email, and password</param>
-        /// <returns>UserTokenDTO which consists of username, email, and jwt token</returns>
+        ///CreateUserDTO consisting of usernname, firstname, lastname, phonenumber, email, and password
+        /// UserTokenDTO which consists of username, email, and jwt token
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] CreateUserDTO createUsersDTO)
         {

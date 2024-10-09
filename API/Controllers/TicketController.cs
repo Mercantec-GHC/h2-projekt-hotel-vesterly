@@ -8,9 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
-    /// <summary>
-    /// This class is a controller class that handles the HTTP requests for the User entity 
-    /// </summary>
+    
     [ApiController]
     [Route("[controller]")]
     public class TicketController : Controller
@@ -24,10 +22,7 @@ namespace API.Controllers
             _userManager = user;
         }
 
-        /// <summary>
-        /// Fetch all tickets
-        /// </summary>
-        /// <returns></returns>
+       
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -41,10 +36,7 @@ namespace API.Controllers
             return Ok(tickets);
         }
 
-        /// <summary>
-        /// Fetch a ticket using the id
-        /// </summary>
-        /// <returns></returns>
+      
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
@@ -58,11 +50,7 @@ namespace API.Controllers
             return Ok(ticket);
         }
 
-        /// <summary>
-        /// Add a new ticket
-        /// </summary>
-        /// <param name="ticket"></param>
-        /// <returns></returns>
+      
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Ticket ticket)
         {
@@ -71,11 +59,7 @@ namespace API.Controllers
             return Ok(ticket);
         }
 
-        /// <summary>
-        /// Updating an already existing ticket, this can also be a part of the message/reply feature for now 
-        /// </summary>
-        /// <param name="ticket"></param>
-        /// <returns></returns>
+       
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromBody] Ticket ticket)
         {
@@ -84,11 +68,7 @@ namespace API.Controllers
             return Ok(ticket);
         }
 
-        /// <summary>
-        /// Removing/deleting an existing ticket, may want to do so in another way in the future, where it instead stores the ticket 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+       
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -98,11 +78,7 @@ namespace API.Controllers
             return Ok(ticket);
         }
 
-        /// <summary>
-        /// Fetch all messages for a specific ticket
-        /// </summary>
-        /// <param name="ticketId"></param>
-        /// <returns></returns>
+       
         [HttpGet("{ticketId}/messages")]
         public async Task<IActionResult> GetTicketMessages([FromRoute] int ticketId)
         {
@@ -116,12 +92,7 @@ namespace API.Controllers
             return Ok(messages);
         }
 
-        /// <summary>
-        /// Fetch a specific message for a specific ticket
-        /// </summary>
-        /// <param name="ticketId"></param>
-        /// <param name="messageId"></param>
-        /// <returns></returns>
+       
         [HttpGet("{ticketId}/messages/{messageId}")]
         public async Task<IActionResult> GetTicketMessage([FromRoute] int ticketId, [FromRoute] int messageId)
         {
@@ -142,12 +113,7 @@ namespace API.Controllers
             return Ok(message);
         }
 
-        /// <summary>
-        /// Add a new message to a specific ticket
-        /// </summary>
-        /// <param name="ticketId"></param>
-        /// <param name="createTicketMessageDTO"></param>
-        /// <returns></returns>
+       
         [HttpPost("{ticketId}/messages")]
         //[Authorize]
         public async Task<IActionResult> AddTicketMessage([FromRoute] int ticketId, [FromBody] CreateTicketMessageDTO createTicketMessageDTO)
@@ -188,13 +154,7 @@ namespace API.Controllers
             return Ok(message);
         }
 
-        /// <summary>
-        /// Update an existing message for a specific ticket
-        /// </summary>
-        /// <param name="ticketId"></param>
-        /// <param name="messageId"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
+       
         [HttpPut("{ticketId}/messages/{messageId}")]
         //[Authorize]
         public async Task<IActionResult> UpdateTicketMessage([FromRoute] int ticketId, [FromRoute] int messageId, [FromBody] Message message)
@@ -228,12 +188,7 @@ namespace API.Controllers
             return Ok(existingMessage);
         }
 
-        /// <summary>
-        /// Delete an existing message for a specific ticket
-        /// </summary>
-        /// <param name="ticketId"></param>
-        /// <param name="messageId"></param>
-        /// <returns></returns>
+        
         [HttpDelete("{ticketId}/messages/{messageId}")]
         //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteTicketMessage([FromRoute] int ticketId, [FromRoute] int messageId)

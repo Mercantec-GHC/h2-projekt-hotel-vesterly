@@ -27,11 +27,7 @@ namespace API.Controllers
 
 
 
-        /// <summary>
-        /// Here we have an endpoint that gets a user by id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser([FromRoute] string id)
         {
@@ -43,10 +39,7 @@ namespace API.Controllers
         }
 
 
-        /// <summary>
-        /// Here we have an endpoint that gets all users
-        /// </summary>
-        /// <returns></returns>
+       
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
@@ -99,13 +92,7 @@ namespace API.Controllers
 
 
         
-        /// <summary>
-        /// Here we have an endpoint that updates an employee by id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="employeeDTO"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
+       
         [HttpPut("employee/{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateEmployee([FromRoute] int id, [FromBody] CreateEmployeeDTO employeeDTO)
@@ -129,11 +116,7 @@ namespace API.Controllers
      
         }
 
-        /// <summary>
-        /// This endpoint is used to assign the role of admin to a user by id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        
         [HttpPost("assignadmin/{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AssignRoleToUser([FromRoute] string id)
@@ -157,11 +140,7 @@ namespace API.Controllers
             }
         }
 
-        /// <summary>
-        /// This endpoint is used to remove the role of admin from a user by id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+       
         [HttpDelete("removeadmin/{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RemoveRoleFromUser([FromRoute] string id)
@@ -190,11 +169,7 @@ namespace API.Controllers
         }
 
 
-        /// <summary>
-        /// here we have a method that deletes a user object by id. can be used for both customers and employees
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteUser([FromRoute] int id)
