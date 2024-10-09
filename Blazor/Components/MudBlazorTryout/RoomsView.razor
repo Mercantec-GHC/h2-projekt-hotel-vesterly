@@ -1,5 +1,6 @@
 ﻿@page "/roomType"
 @using DomainModels.DTO
+@using DomainModels.DB
 @inject NavigationManager NavigationManager
 
 @inject Services.DatabaseServices DatabaseServicesInstance
@@ -29,12 +30,12 @@
 
                 <MudCardActions Class="d-flex" Style="justify-content:space-around">
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
-                               Style="width:45%;">
-                        Enkeltværelse
+                               Style="width:45%;" OnClick="@(() => Navigation.NavigateTo("/roomdetails"))">
+                        Single Room
                     </MudButton>
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
-                               Style="width:45%;" >
-                        Dobbeltværelse
+                               Style="width:45%;">
+                        Double room
                     </MudButton>
                 </MudCardActions>
             </MudCard>
@@ -60,11 +61,11 @@
                 <MudCardActions Class="d-flex" Style="justify-content:space-around">
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
                                Style="width:45%;">
-                        Enkeltværelse
+                        Single room
                     </MudButton>
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
-                               Style="width:45%;" >
-                        Dobbeltværelse
+                               Style="width:45%;" OnClick="@(() => Navigation.NavigateTo("/roomdetails"))">
+                        Double room
                     </MudButton>
                 </MudCardActions>
             </MudCard>
@@ -88,8 +89,8 @@
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-center">
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
-                               Style="width:50%;" >
-                        Se værelser
+                               Style="width:50%;" OnClick="@(() => Navigation.NavigateTo("/roomdetails"))">
+                        Penthouse
                     </MudButton>
                 </MudCardActions>
             </MudCard>
@@ -136,5 +137,39 @@
                     break;
             }
         }
+
+    }
+
+    private GetRoomDetailsDTO GetRoomDetailsByType(string type)
+    {
+        var rooms = DatabaseServicesInstance.GetAllRoomsTypes().Result;
+
+
+        var room = rooms.FirstOrDefault(r => r.Type.Equals(type, StringComparison.OrdinalIgnoreCase));
+        {
+            return new GetRoomDetailsDTO
+            {
+                    Type = room.Type,
+                    RoomNumber = room.RoomNumber,
+                    Price = room.Price,
+            };
+        }
+
+
+        return null;
+    }
+    private void FetchRoomDetailsAndNavigate(string roomType)
+    {
+        var roomDetails = GetRoomDetailsByType(roomType);
+        if (roomDetails != null)
+        {
+            NavigateToRoomForm(roomDetails);
+        }
+    }
+
+    private void NavigateToRoomForm(GetRoomDetailsDTO roomDetails)
+    {
+        // Navigate to the room form page using only room type
+        NavigationManager.NavigateTo($"/roomForm/{roomDetails.Type}");
     }
 }
