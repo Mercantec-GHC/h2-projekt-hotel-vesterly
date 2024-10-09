@@ -19,17 +19,15 @@ public class ReservationsController : Controller
     private readonly UserManager<User> _userManager;
 
     public ReservationsController(HotelContext context, UserManager<User> userManager)
-   
-    /// Most likely wanna later add some more complex logic here to handle creation of reservations based off of user and room availability and such.
-    //[IgnoreAntiforgeryToken]
-    [ApiController]
-    [Route("[controller]")]
-    public class ReservationsController : Controller
+    
+
+       
     {
         // Fill the DB Context through Dependency Injection
         _context = context;
         _userManager = userManager;
     }
+
 
     [HttpGet]
     public async Task<IActionResult> Get()
@@ -172,7 +170,7 @@ public class ReservationsController : Controller
             return BadRequest("Reservation ID could not be found.");
         }
 
-        Check if user is admin role or user role
+       
         if (!User.IsInRole("Admin"))
             {
                 // User can only update their own reservation
