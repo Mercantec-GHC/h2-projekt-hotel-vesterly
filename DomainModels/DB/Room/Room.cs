@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace DomainModels.DB
 {
@@ -15,6 +16,7 @@ namespace DomainModels.DB
         public string Description { get; set; } = "";
         public List<DateTime> BookedDates { get; set; } = new();
         public virtual List<string> Tags { get; set; } = new List<string>();
+        [JsonIgnore]
         public List<Reservation> Reservations { get; set; } = new List<Reservation>();
 
     }

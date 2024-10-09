@@ -41,7 +41,7 @@
                     <MudTd>@context.GuestEmail</MudTd>
                     <MudTd>@context.CheckIn.ToShortDateString()</MudTd>
                     <MudTd>@context.CheckOut.ToShortDateString()</MudTd>
-                    <MudTd>@context.Price</MudTd>
+                    <MudTd>@context.Room.Price</MudTd>
                     <MudTd>
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="@($"/Reservations/Update/{context.Id}")">Edit</MudButton>
                         <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(async () => await DeleteReservation(context.Id))">Delete</MudButton>

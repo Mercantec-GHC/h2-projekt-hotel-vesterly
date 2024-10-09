@@ -15,7 +15,7 @@ namespace API.Controllers
     /// Most likely wanna later add some more complex logic here to handle creation of reservations based off of user and room availability and such.
     /// </summary>
     /// 
-    [IgnoreAntiforgeryToken]
+    //[IgnoreAntiforgeryToken]
     [ApiController]
     [Route("[controller]")]
     public class ReservationsController : Controller
@@ -38,15 +38,15 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            // Currently the simplest CRUD operation
-            var reservations = await _context.Reservations.ToListAsync();
+            var reservations = await _context.Reservations.Include(r => r.Room).ToListAsync();
+            //var reservations = await _context.Reservations.ToListAsync();
             return Ok(reservations);
         }
 
         [HttpGet("byUsername/{username}")]
         public async Task<IActionResult> GetByUsername(string username)
         {
-            var reservations = await _context.Reservations.Where(r => r.Customer.UserName == username).ToListAsync();
+            var reservations = await _context.Reservations.Include(r => r.Room).Where(r => r.Customer.UserName == username).ToListAsync();
             return Ok(reservations);
         }
 
@@ -114,7 +114,6 @@ namespace API.Controllers
             {
                 Room = room,
                 Customer = customer,
-                Price = room.Price,
                 CheckIn = reservation.CheckIn,
                 CheckOut = reservation.CheckOut,
                 GuestName = reservation.GuestName,
