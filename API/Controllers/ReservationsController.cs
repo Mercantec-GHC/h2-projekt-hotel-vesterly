@@ -68,9 +68,9 @@ public class ReservationsController : Controller
         return Ok(reservation);
     }
 
-    [HttpPost("create")]
+    [HttpPost("add")]
     //[Authorize]
-    public async Task<IActionResult> Post([FromBody] Reservation reservation)
+    public async Task<IActionResult> Post(CreateReservationDTO reservation)
     {
         // Check if the data fulfills the requirements of the DTO
         if (!ModelState.IsValid)
@@ -79,24 +79,24 @@ public class ReservationsController : Controller
         }
 
         // Find user by username
-        User customer;
-        try
-        {
-            customer = await _userManager.FindByNameAsync(User.GetUsername());
+        //User customer;
+        //try
+        //{
+        //    customer = await _userManager.FindByNameAsync(User.GetUsername());
 
-            if (customer == null)
-            {
-                customer = await _userManager.FindByNameAsync("a");
-            }
-        }
-        catch
-        {
-            customer = await _userManager.FindByNameAsync("a");
-        }
+        //    if (customer == null)
+        //    {
+        //        customer = await _userManager.FindByNameAsync("a");
+        //    }
+        //}
+        //catch
+        //{
+        //    customer = await _userManager.FindByNameAsync("a");
+        //}
 
-        Room? room = await _context.Rooms.FirstAsync(r => r.Id == reservation.Room.Id);
+        Room? room = await _context.Rooms.FirstAsync(r => r.Id == reservation.RoomId);
 
-        if (room == null || customer == null)
+        if (room == null /*|| customer == null*/)
         {
             return BadRequest("Room ID could not be found.");
         }
@@ -115,7 +115,7 @@ public class ReservationsController : Controller
             return BadRequest("Room is already reserved for the selected dates.");
         }
 
-        Room roomId = _context.Rooms.First(x => x.Id == reservation.Room.Id) ?? new();
+        Room roomId = _context.Rooms.First(x => x.Id == reservation.RoomId) ?? new();
 
 
         Reservation res = new Reservation
@@ -125,7 +125,7 @@ public class ReservationsController : Controller
             GuestPhoneNr = reservation.GuestPhoneNr,
             GuestEmail = reservation.GuestEmail,
             Room = room,
-            Customer = customer,
+            //Customer = customer,
             CheckIn = reservation.CheckIn,
             CheckOut = reservation.CheckOut
         };
@@ -141,7 +141,7 @@ public class ReservationsController : Controller
 
 
     [HttpPut("update")]
-    [Authorize]
+    //[Authorize]
     public async Task<IActionResult> Update(ModifyReservationDTO modifyReservation)
     {
         // Check if the data fulfills the requirements of the DTO
@@ -151,8 +151,8 @@ public class ReservationsController : Controller
         }
 
         // Get user information
-        var username = User.GetUsername();
-        var appuser = await _userManager.FindByNameAsync(username);
+        //var username = User.GetUsername();
+        //var appuser = await _userManager.FindByNameAsync(username);
 
 
 
@@ -171,14 +171,14 @@ public class ReservationsController : Controller
         }
 
        
-        if (!User.IsInRole("Admin"))
-            {
-                // User can only update their own reservation
-                if (reservation.Customer.Id != appuser.Id)
-                {
-                    return Unauthorized("You can only modify your own reservations!");
-                }
-        }
+        //if (!User.IsInRole("Admin"))
+        //    {
+        //        // User can only update their own reservation
+        //        if (reservation.Customer.Id != appuser.Id)
+        //        {
+        //            return Unauthorized("You can only modify your own reservations!");
+        //        }
+        //}
 
         var existRooms = _context.Rooms
             .Where(x => x.Type == modifyReservation.RoomType)
@@ -235,9 +235,9 @@ public class ReservationsController : Controller
     //[Authorize]
     public async Task<IActionResult> Delete(int id)
     {
-        // Get user information
-        var username = User.GetUsername();
-        var appuser = await _userManager.FindByNameAsync(username);
+        //// Get user information
+        //var username = User.GetUsername();
+        //var appuser = await _userManager.FindByNameAsync(username);
 
         // Find reservation by ID
         var reservation = _context.Reservations
@@ -250,15 +250,15 @@ public class ReservationsController : Controller
             return BadRequest("Reservation ID could not be found.");
         }
 
-        // Check if user is admin role or user role
-        if (!User.IsInRole("Admin"))
-        {
-            // User can only delete their own reservation
-            if (reservation.Customer.Id != appuser.Id)
-            {
-                return Unauthorized("You can only delete your own reservations!");
-            }
-        }
+        //// Check if user is admin role or user role
+        //if (!User.IsInRole("Admin"))
+        //{
+        //    // User can only delete their own reservation
+        //    if (reservation.Customer.Id != appuser.Id)
+        //    {
+        //        return Unauthorized("You can only delete your own reservations!");
+        //    }
+        //}
 
         var room = reservation.Room;
 

@@ -5,6 +5,7 @@ using DomainModels.DTO.Reservation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Extensions;
+using System.Net.Http;
 
 
 namespace Blazor.Services;
@@ -79,6 +80,10 @@ public class DatabaseServices
         return _http.GetFromJsonAsync<Reservation>(_baseURL +$"Reservations/{id}");
     }
 
+    public async Task CreateReservation(CreateReservationDTO createReservationDTO)
+    {
+        await _http.PostAsJsonAsync(_baseURL + "Reservations/add", createReservationDTO);
+    }
     public async Task UpdateReservation(Reservation reservation)
     {
         var reservationDTO = new ModifyReservationDTO

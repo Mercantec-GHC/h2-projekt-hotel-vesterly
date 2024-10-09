@@ -186,7 +186,7 @@
             await DatabaseServicesInstance.DeleteReservation(reservation.Id);
             successMessage = "Reservation deleted successfully!";
             errorMessage = "";
-            Navigation.NavigateTo("/reservations");
+            Navigation.NavigateTo("/bookings");
         }
         catch (Exception ex)
         {

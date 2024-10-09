@@ -61,13 +61,7 @@ namespace API.Controllers
             return Ok(user);
         }
 
-        /// <summary>
-        /// here we have a method that updates a user object by id.
-        /// That is to be used by the customers or employee to update that specific customers account
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="userDTO"></param>
-        /// <returns></returns>
+       
         [HttpPut("customer/{id}")]
         [Authorize]
         public IActionResult UpdateCustomer([FromRoute] int id, [FromBody] CreateUserDTO userDTO)
