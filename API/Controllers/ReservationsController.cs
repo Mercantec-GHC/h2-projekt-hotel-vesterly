@@ -297,11 +297,7 @@ public class ReservationsController : Controller
 
 
             room.BookedDates.AddRange(bookingDates);
-
-
         }
-
         await _context.SaveChangesAsync();
     }
-
 }
