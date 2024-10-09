@@ -19,6 +19,12 @@ public class ReservationsController : Controller
     private readonly UserManager<User> _userManager;
 
     public ReservationsController(HotelContext context, UserManager<User> userManager)
+   
+    /// Most likely wanna later add some more complex logic here to handle creation of reservations based off of user and room availability and such.
+    //[IgnoreAntiforgeryToken]
+    [ApiController]
+    [Route("[controller]")]
+    public class ReservationsController : Controller
     {
         // Fill the DB Context through Dependency Injection
         _context = context;

@@ -66,7 +66,7 @@
         await GetUser();
         await GetReservationsFromDB();
     }
-
+        
     public async Task GetUser()
     {
         var authState = await _authStateProvider.GetAuthenticationStateAsync();
