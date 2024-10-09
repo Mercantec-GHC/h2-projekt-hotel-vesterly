@@ -139,7 +139,7 @@ public class ReservationsController : Controller
 
 
     [HttpPut("update")]
-    [Authorize]
+    //[Authorize]
     public async Task<IActionResult> Update(ModifyReservationDTO modifyReservation)
     {
         // Check if the data fulfills the requirements of the DTO
@@ -149,8 +149,8 @@ public class ReservationsController : Controller
         }
 
         // Get user information
-        var username = User.GetUsername();
-        var appuser = await _userManager.FindByNameAsync(username);
+        //var username = User.GetUsername();
+        //var appuser = await _userManager.FindByNameAsync(username);
 
 
 
@@ -169,14 +169,14 @@ public class ReservationsController : Controller
         }
 
         
-        if (!User.IsInRole("Admin"))
-            {
-                // User can only update their own reservation
-                if (reservation.Customer.Id != appuser.Id)
-                {
-                    return Unauthorized("You can only modify your own reservations!");
-                }
-        }
+        //if (!User.IsInRole("Admin"))
+        //    {
+        //        // User can only update their own reservation
+        //        if (reservation.Customer.Id != appuser.Id)
+        //        {
+        //            return Unauthorized("You can only modify your own reservations!");
+        //        }
+        //}
 
         var existRooms = _context.Rooms
             .Where(x => x.Type == modifyReservation.RoomType)
@@ -235,8 +235,8 @@ public class ReservationsController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         // Get user information
-        var username = User.GetUsername();
-        var appuser = await _userManager.FindByNameAsync(username);
+        //var username = User.GetUsername();
+        //var appuser = await _userManager.FindByNameAsync(username);
 
         // Find reservation by ID
         var reservation = _context.Reservations
@@ -250,14 +250,14 @@ public class ReservationsController : Controller
         }
 
         // Check if user is admin role or user role
-        if (!User.IsInRole("Admin"))
-        {
-            // User can only delete their own reservation
-            if (reservation.Customer.Id != appuser.Id)
-            {
-                return Unauthorized("You can only delete your own reservations!");
-            }
-        }
+        //if (!User.IsInRole("Admin"))
+        //{
+        //    // User can only delete their own reservation
+        //    if (reservation.Customer.Id != appuser.Id)
+        //    {
+        //        return Unauthorized("You can only delete your own reservations!");
+        //    }
+        //}
 
         var room = reservation.Room;
 
