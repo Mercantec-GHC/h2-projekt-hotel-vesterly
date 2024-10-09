@@ -20,7 +20,7 @@ public class RoomController : ControllerBase
         _context = context;
     }
 
-    [HttpGet] // Get all room
+    [HttpGet]
     
     public async Task<ActionResult<IEnumerable<Room>>> GetAllRooms()
     {
@@ -30,13 +30,16 @@ public class RoomController : ControllerBase
     }
 
    
+    [HttpGet("{id}")]
     public async Task<ActionResult<Room>> GetRoom(int id)
     {
         var room = await _context.Rooms.FindAsync(id);
+       
         if (room == null)
         {
             return NotFound();
         }
+        
         return Ok(room);
     }
 
@@ -76,6 +79,7 @@ public class RoomController : ControllerBase
 
 
 
+   
     [HttpPost]
     //[Authorize(Roles = "Admin")]
     public async Task<IActionResult> Post(PostRoomDTO roomDTO) 
@@ -168,8 +172,8 @@ public class RoomController : ControllerBase
         var room = await _context.Rooms.FindAsync(id);
 
         if (room == null)
+        {
             return NotFound();
-
         }
 
         return Ok();
