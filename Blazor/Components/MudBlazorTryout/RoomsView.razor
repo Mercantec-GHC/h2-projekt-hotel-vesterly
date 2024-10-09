@@ -1,4 +1,6 @@
 ﻿@page "/roomType"
+@using DomainModels.DTO
+@inject NavigationManager NavigationManager
 
 @inject Services.DatabaseServices DatabaseServicesInstance
 
@@ -23,20 +25,17 @@
                         <MudText Typo="Typo.h3">@PriseSingleStandart @Curency.ToUpper()</MudText>
                         <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">/Per nat</MudText>
                     </div>
-                    <MudList T="string" Class="mx-auto mt-4" Style="width:300px;">
-                        <MudListItem Icon="@Icons.Material.Filled.LiveHelp">
-                            Unlimited something
-                        </MudListItem>
-                        <MudListItem Icon="@Icons.Material.Filled.LiveHelp">
-                            10 something
-                        </MudListItem>
-                        <MudListItem Icon="@Icons.Material.Filled.LiveHelp">
-                            No something
-                        </MudListItem>
-                    </MudList>
                 </MudCardContent>
-                <MudCardActions Class="d-flex justify-center">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">See rooms</MudButton>
+
+                <MudCardActions Class="d-flex" Style="justify-content:space-around">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
+                               Style="width:45%;" OnClick="@(() => FetchRoomDetailsAndNavigate("Standard Single"))">
+                        Enkeltværelse
+                    </MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
+                               Style="width:45%;" OnClick="@(() => FetchRoomDetailsAndNavigate("Standard Double"))">
+                        Dobbeltværelse
+                    </MudButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
@@ -56,20 +55,17 @@
                         <MudText Typo="Typo.h3">@PriseSinglePremium @Curency.ToUpper()</MudText>
                         <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">/Per nat</MudText>
                     </div>
-                    <MudList T="string" Class="mx-auto mt-4" Style="width:300px;">
-                        <MudListItem Icon="@Icons.Material.Filled.LiveHelp">
-                            Unlimited something
-                        </MudListItem>
-                        <MudListItem Icon="@Icons.Material.Filled.LiveHelp">
-                            10 something
-                        </MudListItem>
-                        <MudListItem Icon="@Icons.Material.Filled.LiveHelp">
-                            No something
-                        </MudListItem>
-                    </MudList>
                 </MudCardContent>
-                <MudCardActions Class="d-flex justify-center">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">See rooms</MudButton>
+
+                <MudCardActions Class="d-flex" Style="justify-content:space-around">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
+                               Style="width:45%;" OnClick="@(() => FetchRoomDetailsAndNavigate("Premium Single"))">
+                        Enkeltværelse
+                    </MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
+                               Style="width:45%;" OnClick="@(() => FetchRoomDetailsAndNavigate("Premium Double"))">
+                        Dobbeltværelse
+                    </MudButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
@@ -89,20 +85,12 @@
                         <MudText Typo="Typo.h3">@PrisePenthouse @Curency.ToUpper()</MudText>
                         <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">/Per nat</MudText>
                     </div>
-                    <MudList T="string" Class="mx-auto mt-4" Style="width:300px;">
-                        <MudListItem Icon="@Icons.Material.Filled.LiveHelp">
-                            Unlimited something
-                        </MudListItem>
-                        <MudListItem Icon="@Icons.Material.Filled.LiveHelp">
-                            10 something
-                        </MudListItem>
-                        <MudListItem Icon="@Icons.Material.Filled.LiveHelp">
-                            No something
-                        </MudListItem>
-                    </MudList>
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-center">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;" Href="/roomtest">See rooms</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
+                               Style="width:50%;" OnClick="@(() => FetchRoomDetailsAndNavigate("Penthouse"))">
+                        Se værelser
+                    </MudButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
@@ -111,42 +99,36 @@
 
 
 @code {
-    private int PriseSingleStandart = 0;
-    private int PriseDoubleStandart = 0;
-    private int PriseSinglePremium = 0;
-    private int PriseDoublePremium = 0;
-    private int PrisePenthouse = 0;
-    private string Curency = "DKK";
-
-    protected override async Task OnInitializedAsync()
+    // Mock room data
+    private List<GetRoomDetailsDTO> rooms = new List<GetRoomDetailsDTO>
     {
-        await GetAllRoomsTypes();
+        new GetRoomDetailsDTO { Type = "Standard Single", Rooms = 10, Beds = "Single", Price = 100, Condition = "Good" },
+        new GetRoomDetailsDTO { Type = "Standard Double", Rooms = 10, Beds = "Double", Price = 100, Condition = "Good" },
+        new GetRoomDetailsDTO { Type = "Premium Single", Rooms = 5, Beds = "Single", Price = 300, Condition = "Excellent" },
+        new GetRoomDetailsDTO { Type = "Premium Double", Rooms = 5, Beds = "Double", Price = 300, Condition = "Excellent" },
+        new GetRoomDetailsDTO { Type = "Penthouse", Rooms = 2, Beds = "King", Price = 500, Condition = "Luxury" }
+    };
+
+    // Method to get room details based on type
+    private GetRoomDetailsDTO GetRoomDetailsByType(string type)
+    {
+        return rooms.FirstOrDefault(room => room.Type == type);
     }
 
-    async Task GetAllRoomsTypes()
+    // Method to fetch room details and navigate to the room form
+    private void FetchRoomDetailsAndNavigate(string roomType)
     {
-        var rooms = await DatabaseServicesInstance.GetAllRoomsTypes();
-
-        foreach (var room in rooms)
+        var roomDetails = GetRoomDetailsByType(roomType);
+        if (roomDetails != null)
         {
-            switch (room.Type)
-            {
-                case "standard single":
-                    PriseSingleStandart = room.Price;
-                    break;
-                case "standard double":
-                    PriseDoubleStandart = room.Price;
-                    break;
-                case "premium single":
-                    PriseSinglePremium = room.Price;
-                    break;
-                case "premium double":
-                    PriseDoublePremium = room.Price;
-                    break;
-                case "penthouse":
-                    PrisePenthouse = room.Price;
-                    break;
-            }
+            NavigateToRoomForm(roomDetails);
         }
+    }
+
+    // Navigate only using the room type
+    private void NavigateToRoomForm(GetRoomDetailsDTO roomDetails)
+    {
+        // Navigate to the room form page using only room type
+        NavigationManager.NavigateTo($"/roomForm/{roomDetails.Type}");
     }
 }

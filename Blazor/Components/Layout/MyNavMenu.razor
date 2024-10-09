@@ -2,25 +2,24 @@
      <MudNavGroup Title="Hotel Vesterly" Expanded="true">
         <MudNavLink Href="/" Match="NavLinkMatch.All">Hotel Vesterly</MudNavLink>
         <MudNavLink Href="/roomType" Match="NavLinkMatch.Prefix">Room Types</MudNavLink>
-    </MudNavGroup>
-    
-    <MudNavGroup Title="Login Pages" Expanded="true">
-        
-         <MudNavLink Href="/register" Match="NavLinkMatch.Prefix">Sign up page</MudNavLink>
-         <MudNavLink Href="/employee" Match="NavLinkMatch.Prefix">Employee Sign in</MudNavLink>
-         <MudNavLink Href="/login" Match="NavLinkMatch.Prefix">User Sign in</MudNavLink>
-         <AuthorizeView>
+        <MudNavLink Href="/roomSearch" Match="NavLinkMatch.Prefix">Search page</MudNavLink>
+        <MudNavLink Href="/profilePage" Match="NavLinkMatch.Prefix">Profile</MudNavLink>
+        <MudNavGroup Title="Function Pages" Expanded="true">
+            <MudNavLink Href="/register" Match="NavLinkMatch.Prefix">Sign up page</MudNavLink>
+            <MudNavLink Href="/reservations" Match="NavLinkMatch.Prefix">Reservations page</MudNavLink>
+            <MudNavLink Href="/user/reservations/view" Match="NavLinkMatch.Prefix">View reservations</MudNavLink>
+        </MudNavGroup>
+        <MudNavGroup Title="Login Pages" Expanded="true">
+            <MudNavLink Href="/employee" Match="NavLinkMatch.Prefix">Employee</MudNavLink>
+            <MudNavLink Href="/login" Match="NavLinkMatch.Prefix">User page</MudNavLink>
+            <AuthorizeView>
             <MudNavLink Href="/Logout" Match="NavLinkMatch.Prefix">Logout</MudNavLink>
-         </AuthorizeView>
-         <MudNavLink Href="/profilePage" Match="NavLinkMatch.Prefix">Profile</MudNavLink>
-
-        <MudNavGroup Title="Booking" Expanded="true">
-            <MudNavLink Href="/reservations" Match="NavLinkMatch.Prefix">Reservations page</MudNavLink> 
+            </AuthorizeView>
         </MudNavGroup>
-        <MudNavGroup Title="Ticket" Expanded="true">
-            <MudNavLink Href="/ticket/create" Match="NavLinkMatch.Prefix">Create Ticket</MudNavLink>
-            <MudNavLink Href="/ticket/view" Match="NavLinkMatch.Prefix">View Tickets</MudNavLink>
-        </MudNavGroup>
+    </MudNavGroup>
+    <MudNavGroup Title="Tickets" Expanded="true">
+        <MudNavLink Href="/ticket/view" Match="NavLinkMatch.Prefix">View tickets</MudNavLink>
+        <MudNavLink Href="/ticket/create" Match="NavLinkMatch.Prefix">Create ticket</MudNavLink>
     </MudNavGroup>
     <MudNavLink Href="/about" Match="NavLinkMatch.Prefix">About</MudNavLink>
 </MudNavMenu>

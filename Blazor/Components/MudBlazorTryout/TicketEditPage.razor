@@ -9,21 +9,23 @@
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
     <MudCard Outlined="true">
-        <MudCardContent>
-            <MudTextField @bind-Value="ticket.Title" Label="Ticket title" HelperText="Title" Variant="Variant.Outlined" />
-            <MudTextField @bind-Value="ticket.Description" Label="Ticket description" HelperText="Description" Variant="Variant.Outlined" />
-        </MudCardContent>
-        <MudCardContent>
-            <MudSelect T="Status" Label="Status" @bind-Value="ticket.status">
-                @foreach (var status in StatusList)
-                {
-                    <MudSelectItem T="Status" Value="@status">@status</MudSelectItem>
-                }
-            </MudSelect>
-        </MudCardContent>
-        <MudCardActions>
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => PutTicketToDB()">Save changes</MudButton>
-        </MudCardActions>
+        <MudPaper Class="pa-4">
+            <MudCardContent>
+                <MudTextField @bind-Value="ticket.Title" Label="Ticket title" HelperText="Title" Variant="Variant.Outlined" />
+                <MudTextField @bind-Value="ticket.Description" Label="Ticket description" HelperText="Description" Variant="Variant.Outlined" />
+            </MudCardContent>
+            <MudCardContent>
+                <MudSelect T="Status" Label="Status" @bind-Value="ticket.status">
+                    @foreach (var status in StatusList)
+                    {
+                        <MudSelectItem T="Status" Value="@status">@status</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => PutTicketToDB()">Save changes</MudButton>
+            </MudCardActions>
+        </MudPaper>
     </MudCard>
 </MudContainer>
 

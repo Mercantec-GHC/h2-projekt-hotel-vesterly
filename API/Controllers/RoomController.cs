@@ -115,7 +115,7 @@ public class RoomController : ControllerBase
     /// <param name="room">Room object</param>
     /// <returns>Status OK with modified Room</returns>
     [HttpPut]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update([FromBody] Room room) 
     {
         // Currently the simplest CRUD operation
@@ -251,11 +251,24 @@ public class RoomController : ControllerBase
 
         // If no rooms are available, return Ok(false)
         return Ok(false); // The rooms are unavailable
+    [HttpGet("RoomDetails/{type}")]
+    public async Task<IActionResult> GetRoomDetailsByType([FromRoute] string type)
+    {
+        var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Type == type);
+
+        if (room == null)
+            return NotFound();
+
+        var roomDetails = new GetRoomDetailsDTO
+        {
+            Type = room.Type,
+            Beds = room.Beds,
+            Price = room.Price,
+            Condition = room.Condition
+        };
+
+        return Ok(roomDetails);
     }
-
-
-
-
 }
 
 

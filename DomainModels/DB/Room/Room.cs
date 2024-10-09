@@ -13,12 +13,10 @@ namespace DomainModels.DB
         public RoomStatus Status { get; set; }
         public string Condition { get; set; } = "";
         public string Description { get; set; } = "";
-       
         public virtual List<string> Tags { get; set; } = new List<string>();
-    
         public List <DateTime> BookedDates { get; set; } = new List<DateTime>();
     }
-       public enum RoomStatus
+    public enum RoomStatus
         {
             available,
             underMaintenece,

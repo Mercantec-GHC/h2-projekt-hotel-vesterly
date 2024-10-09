@@ -43,10 +43,18 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-app.UseAntiforgery();
+
+app.UseRouting();
+
+// Place it after Authentication and Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Add UseAntiforgery middleware back in the correct position
+app.UseAntiforgery();
+
+// Ensure it is before UseEndpoints or MapControllers
+//app.MapControllers();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 

@@ -1,0 +1,99 @@
+﻿@page "/register"
+@using System.ComponentModel.DataAnnotations
+@using DomainModels.DTO
+@using DomainModels
+@using Blazor.Auth
+@using Blazor.Auth.Contracts
+@inject Blazor.Auth.AuthService authService
+@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider authState
+
+@inject NavigationManager NavigationManager
+@inject HttpClient _http
+
+<EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Username" Class="mt-3"
+                                  @bind-Value="model.Username" For="@(() => model.Username)" />
+                    <MudTextField Label="Firstname" Class="mt-3"
+                                  @bind-Value="model.Firstname" For="@(() => model.Firstname)" />
+                    <MudTextField Label="Lastname" Class="mt-3"
+                                  @bind-Value="model.Lastname" For="@(() => model.Lastname)" />
+                    <MudTextField Label="Phonenumber" Class="mt-3"
+                                  @bind-Value="model.PhoneNumber" For="@(() => model.PhoneNumber)" />
+                    <MudTextField Label="Email" Class="mt-3"
+                                  @bind-Value="model.Email" For="@(() => model.Email)" />
+                    <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
+                                  @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">login</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="5">
+            <MudPaper Class="pa-4 mud-height-full">
+                <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+                @if (success)
+                {
+                    <MudText Color="Color.Success">Success</MudText>
+                }
+                else
+                {
+                    <MudText Color="@Color.Error">
+                        @foreach (PWErrMsg pwReq in pwReqs)
+                        {
+                            <p>@pwReq.description</p>
+                        }
+                    </MudText>
+                }
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+
+    CreateUserDTO model = new CreateUserDTO();
+    bool success;
+    List<PWErrMsg> pwReqs = new();
+
+    // we use this function to handle the registration and signin/login of a user.
+    private async void OnValidSubmit(EditContext context)
+    {
+        // first we will make a post request registering the user and then return a true or false once the user is registered.
+        var response = await authService.Register(model!);
+        success = response.IsSuccessStatusCode;
+        pwReqs = await response.Content.ReadFromJsonAsync<List<PWErrMsg>>();
+
+        //Here we instanciate a new LoginDTO object and set the Username and Password to the values from the model.
+        LoginDTO loginDTO = new LoginDTO { Username = model.Username, Password = model.Password };
+
+        StateHasChanged();
+
+        //If the user is not registered we will return and not try to login the user.
+        if (!success)
+        {
+            return;
+        }
+
+        //If the user is registered we will try to login the user. By calling the login method from the authService.
+        var loginResponse = await authService.Login(loginDTO!);
+        if (loginResponse != null)
+        {
+            await ((AuthStateProvide)authState).AuthenticateUser(loginResponse.Token);
+            NavigationManager.NavigateTo("/");
+        }
+
+    }
+
+}
